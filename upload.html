@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Crop Image - KisanMitra</title>
+    <meta name="description"
+        content="Upload a photo of your crop for AI-powered disease detection and treatment recommendations.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <button class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                    <div class="menu-divider"></div>
+                    <button class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Header -->
+                <div style="max-width: 672px; margin: 0 auto; text-align: center; margin-bottom: 32px;">
+                    <div class="badge mb-4">
+                        <i data-lucide="camera" class="icon-sm"></i>
+                        AI Disease Detection
+                    </div>
+                    <h1 style="font-size: 1.875rem; margin-bottom: 16px;">Upload Crop Image</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground));">
+                        Take a clear photo of the affected plant part. Our AI will identify
+                        the disease and suggest treatments.
+                    </p>
+                </div>
+
+                <div style="max-width: 672px; margin: 0 auto;">
+
+                    <!-- Upload Area -->
+                    <div class="card mb-6">
+                        <div class="card-content">
+                            <!-- Upload Zone (visible by default) -->
+                            <div class="upload-zone" id="upload-zone">
+                                <div class="upload-icon">
+                                    <i data-lucide="upload" style="width: 32px; height: 32px;"></i>
+                                </div>
+                                <h3 style="margin-bottom: 8px;">Click to upload or drag & drop</h3>
+                                <p
+                                    style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                    PNG, JPG up to 10MB
+                                </p>
+                                <div style="display: flex; justify-content: center; gap: 12px;">
+                                    <span class="btn btn-secondary btn-sm">
+                                        <i data-lucide="camera" class="icon-sm"></i>
+                                        Take Photo
+                                    </span>
+                                    <span class="btn btn-outline btn-sm">
+                                        <i data-lucide="upload" class="icon-sm"></i>
+                                        Browse Files
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Image Preview (hidden by default) -->
+                            <div class="image-preview" id="image-preview" style="display: none;">
+                                <img id="preview-img" src="" alt="Uploaded crop">
+                                <button class="btn btn-destructive btn-icon remove-btn" id="remove-image"
+                                    style="height: 32px; width: 32px;">
+                                    <i data-lucide="x" class="icon-sm"></i>
+                                </button>
+                            </div>
+
+                            <input type="file" accept="image/*" id="file-input" class="file-input-hidden">
+                        </div>
+                    </div>
+
+                    <!-- Analyze Button (hidden by default) -->
+                    <div id="analyze-section" style="display: none; margin-bottom: 24px;">
+                        <button class="btn btn-primary w-full btn-lg" id="analyze-btn">
+                            <i data-lucide="camera" class="icon-md" id="analyze-btn-icon"></i>
+                            <span id="analyze-btn-text">Analyze Crop</span>
+                        </button>
+                    </div>
+
+                    <!-- Results (hidden by default) -->
+                    <div id="results-section" style="display: none;">
+
+                        <!-- Disease Card -->
+                        <div class="card mb-4" style="border-color: hsl(var(--warning) / 0.3);">
+                            <div class="card-content">
+                                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                    <div
+                                        style="height: 48px; width: 48px; border-radius: var(--radius-sm); background: hsl(var(--warning) / 0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i data-lucide="alert-triangle" class="icon-lg"
+                                            style="color: hsl(var(--warning));"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                            <h3 style="font-size: 1.25rem;">Bacterial Leaf Blight</h3>
+                                            <span class="severity-badge severity-medium">MEDIUM</span>
+                                        </div>
+                                        <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Confidence:
+                                            94%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Treatment Card -->
+                        <div class="card mb-4">
+                            <div class="card-content">
+                                <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="check-circle" class="icon-md"
+                                        style="color: hsl(var(--success));"></i>
+                                    Recommended Treatment
+                                </h3>
+                                <ul class="treatment-list">
+                                    <li>
+                                        <span class="step-number">1</span>
+                                        Apply copper-based bactericide (2g/L water)
+                                    </li>
+                                    <li>
+                                        <span class="step-number">2</span>
+                                        Remove and destroy infected leaves
+                                    </li>
+                                    <li>
+                                        <span class="step-number">3</span>
+                                        Ensure proper drainage in the field
+                                    </li>
+                                    <li>
+                                        <span class="step-number">4</span>
+                                        Spray Streptomycin sulfate (0.5g/L) if severe
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Prevention Card -->
+                        <div class="card mb-4" style="background: hsl(var(--muted) / 0.3);">
+                            <div class="card-content">
+                                <h3 style="margin-bottom: 16px;">Prevention Tips</h3>
+                                <ul class="prevention-list">
+                                    <li><span class="bullet"></span> Use disease-resistant varieties</li>
+                                    <li><span class="bullet"></span> Avoid excessive nitrogen fertilization</li>
+                                    <li><span class="bullet"></span> Maintain proper plant spacing</li>
+                                    <li><span class="bullet"></span> Practice crop rotation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" id="scan-another" style="flex: 1;">Scan Another</button>
+                            <button class="btn btn-primary" style="flex: 1;">Save Report</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="#">Soil Health</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 1800-XXX-XXXX (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

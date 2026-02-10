@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Question - KisanMitra</title>
+    <meta name="description"
+        content="Ask any farming question using text or voice. Get instant AI-powered answers in your local language.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html" class="active">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <button class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html" class="active">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                    <div class="menu-divider"></div>
+                    <button class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Header -->
+                <div style="max-width: 672px; margin: 0 auto; text-align: center; margin-bottom: 32px;">
+                    <div class="badge mb-4">
+                        <i data-lucide="sparkles" class="icon-sm"></i>
+                        AI Farming Assistant
+                    </div>
+                    <h1 style="font-size: 1.875rem; margin-bottom: 16px;">Ask Any Farming Question</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground));">
+                        Type or speak your question in Hindi, English, or your local language.
+                        Get instant AI-powered answers.
+                    </p>
+                </div>
+
+                <!-- Question Input -->
+                <div style="max-width: 672px; margin: 0 auto;">
+                    <div class="card mb-6">
+                        <div class="card-content">
+                            <div class="question-input-wrapper">
+                                <textarea class="textarea" id="question-input"
+                                    placeholder="Type your farming question here..."
+                                    style="padding-right: 48px;"></textarea>
+                                <button class="btn btn-ghost btn-icon mic-btn" id="mic-btn"
+                                    style="position: absolute; right: 8px; top: 8px;">
+                                    <i data-lucide="mic" class="icon-md"></i>
+                                </button>
+                            </div>
+
+                            <div
+                                style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px;">
+                                <div id="listening-indicator" class="listening-indicator" style="display: none;">
+                                    <span class="listening-dot"></span>
+                                    <span
+                                        style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Listening...</span>
+                                </div>
+                                <div></div>
+                                <button class="btn btn-primary" id="send-btn" disabled>
+                                    <i data-lucide="send" class="icon-md" id="send-btn-icon"></i>
+                                    <span id="send-btn-text">Get Answer</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggested Questions -->
+                    <div id="suggested-questions" class="mb-8">
+                        <h3
+                            style="font-size: 0.875rem; font-weight: 500; color: hsl(var(--muted-foreground)); margin-bottom: 12px;">
+                            Popular questions:
+                        </h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            <button class="question-chip">When should I plant wheat in Maharashtra?</button>
+                            <button class="question-chip">How to treat yellow leaves on cotton?</button>
+                            <button class="question-chip">Best fertilizer for paddy?</button>
+                            <button class="question-chip">What is the ideal soil pH for tomatoes?</button>
+                        </div>
+                    </div>
+
+                    <!-- Answer Display -->
+                    <div id="answer-container" class="card answer-card" style="display: none;">
+                        <div class="card-content">
+                            <div class="answer-header">
+                                <div class="answer-avatar">
+                                    <div class="avatar">
+                                        <i data-lucide="sparkles" class="icon-sm"></i>
+                                    </div>
+                                    <span class="font-heading font-bold">KisanMitra AI</span>
+                                </div>
+                                <button class="btn btn-ghost btn-icon" style="height: 32px; width: 32px;">
+                                    <i data-lucide="volume-2" class="icon-sm"></i>
+                                </button>
+                            </div>
+
+                            <p style="line-height: 1.625;">
+                                Based on your question about wheat planting in Maharashtra, the ideal time is from late
+                                October to mid-November. This timing ensures the crop benefits from the cool winter
+                                months and avoids the monsoon season. Make sure your soil is well-prepared with adequate
+                                moisture before sowing. For best results, use certified seeds and apply a basal dose of
+                                nitrogen, phosphorus, and potassium fertilizers at the time of sowing.
+                            </p>
+
+                            <div class="answer-feedback">
+                                <p>Was this helpful?</p>
+                                <div class="feedback-buttons">
+                                    <button class="btn btn-outline btn-sm">👍 Yes</button>
+                                    <button class="btn btn-outline btn-sm">👎 No</button>
+                                    <button class="btn btn-secondary btn-sm" style="margin-left: auto;">Ask
+                                        Follow-up</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="#">Soil Health</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 1800-XXX-XXXX (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

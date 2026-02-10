@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandi Prices - KisanMitra</title>
+    <meta name="description" content="Check today's crop prices across major mandis. Updated every 30 minutes.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html" class="active">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <button class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html" class="active">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                    <div class="menu-divider"></div>
+                    <button class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div class="badge mb-4">
+                        <i data-lucide="indian-rupee" class="icon-sm"></i>
+                        Live Market Prices
+                    </div>
+                    <h1 style="font-size: 1.875rem; margin-bottom: 16px;">Mandi Prices</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground));">
+                        Check today's crop prices across major mandis. Updated every 30 minutes.
+                    </p>
+                </div>
+
+                <!-- Filters -->
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;" class="grid-2-sm">
+                    <div class="search-input-wrapper" style="flex: 1;">
+                        <i data-lucide="search" class="icon-md"></i>
+                        <input type="text" class="input" id="mandi-search" placeholder="Search crop or mandi..."
+                            style="padding-left: 40px;">
+                    </div>
+                    <div class="state-filters" id="state-filters">
+                        <button class="state-filter-btn active" data-state="all">All States</button>
+                        <button class="state-filter-btn" data-state="MP">MP</button>
+                        <button class="state-filter-btn" data-state="Haryana">Haryana</button>
+                        <button class="state-filter-btn" data-state="Gujarat">Gujarat</button>
+                        <button class="state-filter-btn" data-state="Karnataka">Karnataka</button>
+                        <button class="state-filter-btn" data-state="Rajasthan">Rajasthan</button>
+                    </div>
+                </div>
+
+                <!-- Price Cards -->
+                <div id="price-cards" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;"
+                    class="features-grid">
+
+                    <!-- Wheat -->
+                    <div class="card price-card animate-fade-in" data-crop="Wheat" data-mandi="Indore" data-state="MP">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Wheat</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Sharbati</p>
+                                </div>
+                                <span class="trend-badge trend-up">
+                                    <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                    +2.3%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                2,150<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹2,050 - ₹2,250</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Indore, MP
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rice -->
+                    <div class="card price-card animate-fade-in" data-crop="Rice" data-mandi="Karnal"
+                        data-state="Haryana" style="animation-delay: 50ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Rice</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Basmati 1121
+                                    </p>
+                                </div>
+                                <span class="trend-badge trend-up">
+                                    <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                    +1.1%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                3,400<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹3,200 - ₹3,600</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Karnal, Haryana
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cotton -->
+                    <div class="card price-card animate-fade-in" data-crop="Cotton" data-mandi="Rajkot"
+                        data-state="Gujarat" style="animation-delay: 100ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Cotton</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Medium Staple
+                                    </p>
+                                </div>
+                                <span class="trend-badge trend-down">
+                                    <i data-lucide="trending-down" style="width: 12px; height: 12px;"></i>
+                                    -0.5%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                6,200<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹6,000 - ₹6,400</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Rajkot, Gujarat
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soybean -->
+                    <div class="card price-card animate-fade-in" data-crop="Soybean" data-mandi="Ujjain" data-state="MP"
+                        style="animation-delay: 150ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Soybean</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Yellow</p>
+                                </div>
+                                <span class="trend-badge trend-up">
+                                    <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                    +3.2%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                4,800<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹4,600 - ₹5,000</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Ujjain, MP
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maize -->
+                    <div class="card price-card animate-fade-in" data-crop="Maize" data-mandi="Davangere"
+                        data-state="Karnataka" style="animation-delay: 200ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Maize</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Yellow</p>
+                                </div>
+                                <span class="trend-badge trend-down">
+                                    <i data-lucide="trending-down" style="width: 12px; height: 12px;"></i>
+                                    -1.2%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                1,850<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹1,750 - ₹1,950</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Davangere, Karnataka
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Groundnut -->
+                    <div class="card price-card animate-fade-in" data-crop="Groundnut" data-mandi="Junagadh"
+                        data-state="Gujarat" style="animation-delay: 250ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Groundnut</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Bold</p>
+                                </div>
+                                <span class="trend-badge trend-up">
+                                    <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                    +2.8%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                5,400<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹5,200 - ₹5,600</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Junagadh, Gujarat
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mustard -->
+                    <div class="card price-card animate-fade-in" data-crop="Mustard" data-mandi="Alwar"
+                        data-state="Rajasthan" style="animation-delay: 300ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Mustard</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Yellow</p>
+                                </div>
+                                <span class="trend-badge trend-up">
+                                    <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+                                    +0.8%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                4,900<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹4,700 - ₹5,100</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Alwar, Rajasthan
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chana -->
+                    <div class="card price-card animate-fade-in" data-crop="Chana" data-mandi="Jaipur"
+                        data-state="Rajasthan" style="animation-delay: 350ms;">
+                        <div class="card-content">
+                            <div class="crop-header">
+                                <div>
+                                    <h3 style="font-size: 1.25rem;">Chana</h3>
+                                    <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground));">Desi</p>
+                                </div>
+                                <span class="trend-badge trend-down">
+                                    <i data-lucide="trending-down" style="width: 12px; height: 12px;"></i>
+                                    -0.3%
+                                </span>
+                            </div>
+                            <div class="price-value">
+                                <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                5,100<span class="unit">/qtl</span>
+                            </div>
+                            <p style="font-size: 0.875rem; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                                Range: ₹4,900 - ₹5,300</p>
+                            <div class="mandi-location">
+                                <i data-lucide="map-pin" class="icon-sm"></i>
+                                Jaipur, Rajasthan
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- No Results -->
+                <div id="no-results" class="no-results" style="display: none;">
+                    <p>No results found. Try a different search term.</p>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="#">Soil Health</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 1800-XXX-XXXX (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

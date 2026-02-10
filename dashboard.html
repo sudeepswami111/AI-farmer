@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KisanMitra</title>
+    <meta name="description" content="Your farming dashboard with quick actions, weather updates, and market prices.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html" class="active">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <button class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html" class="active">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                    <div class="menu-divider"></div>
+                    <button class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Welcome Header -->
+                <div class="page-header">
+                    <h1 style="font-size: 1.875rem;">Good Morning, Farmer! 🌾</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground)); margin-top: 8px;">
+                        Here's what's happening with your farm today
+                    </p>
+                </div>
+
+                <!-- Quick Actions -->
+                <section class="mb-8">
+                    <h2 style="font-size: 1.25rem; margin-bottom: 16px;">Quick Actions</h2>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;" class="grid-4-md">
+
+                        <a href="upload.html" class="card animate-fade-in" style="transition: transform 0.3s;">
+                            <div class="quick-action-card">
+                                <div class="icon-bg"
+                                    style="background: hsl(var(--primary) / 0.1); color: hsl(var(--primary));">
+                                    <i data-lucide="camera" class="icon-lg"></i>
+                                </div>
+                                <h3>Scan Crop</h3>
+                                <p>Upload a photo to detect diseases</p>
+                            </div>
+                        </a>
+
+                        <a href="ask.html" class="card animate-fade-in"
+                            style="animation-delay: 100ms; transition: transform 0.3s;">
+                            <div class="quick-action-card">
+                                <div class="icon-bg"
+                                    style="background: hsl(var(--secondary) / 0.1); color: hsl(var(--secondary));">
+                                    <i data-lucide="message-circle" class="icon-lg"></i>
+                                </div>
+                                <h3>Ask Question</h3>
+                                <p>Get AI-powered farming advice</p>
+                            </div>
+                        </a>
+
+                        <a href="ask.html" class="card animate-fade-in"
+                            style="animation-delay: 200ms; transition: transform 0.3s;">
+                            <div class="quick-action-card">
+                                <div class="icon-bg"
+                                    style="background: hsl(var(--accent) / 0.1); color: hsl(var(--accent-foreground));">
+                                    <i data-lucide="mic" class="icon-lg"></i>
+                                </div>
+                                <h3>Voice Query</h3>
+                                <p>Speak your question in any language</p>
+                            </div>
+                        </a>
+
+                        <a href="mandi.html" class="card animate-fade-in"
+                            style="animation-delay: 300ms; transition: transform 0.3s;">
+                            <div class="quick-action-card">
+                                <div class="icon-bg"
+                                    style="background: hsl(var(--success) / 0.1); color: hsl(var(--success));">
+                                    <i data-lucide="indian-rupee" class="icon-lg"></i>
+                                </div>
+                                <h3>Mandi Prices</h3>
+                                <p>Check today's market rates</p>
+                            </div>
+                        </a>
+
+                    </div>
+                </section>
+
+                <!-- Weather + Market Prices -->
+                <div class="dashboard-grid">
+
+                    <!-- Weather Widget -->
+                    <section>
+                        <div class="card" style="overflow: hidden;">
+                            <div class="weather-widget">
+                                <div class="weather-header">
+                                    <div>
+                                        <h2
+                                            style="font-size: 1.25rem; color: hsl(var(--primary-foreground)); margin-bottom: 4px;">
+                                            Today's Weather</h2>
+                                        <p style="color: hsl(var(--primary-foreground) / 0.8);">Partly Cloudy</p>
+                                    </div>
+                                    <i data-lucide="cloud-sun"
+                                        style="width: 48px; height: 48px; opacity: 0.8; color: hsl(var(--primary-foreground));"></i>
+                                </div>
+
+                                <div class="weather-metrics">
+                                    <div class="weather-metric">
+                                        <i data-lucide="thermometer-sun" class="icon-md"></i>
+                                        <span style="font-size: 1.5rem; font-weight: 700;">28°C</span>
+                                    </div>
+                                    <div class="weather-metric">
+                                        <i data-lucide="droplets" class="icon-md"></i>
+                                        <span style="font-size: 1.125rem;">65%</span>
+                                    </div>
+                                </div>
+
+                                <div class="weather-alert">
+                                    <i data-lucide="bell" class="icon-md"
+                                        style="color: hsl(var(--warning)); flex-shrink: 0; margin-top: 2px;"></i>
+                                    <p>Rain expected tomorrow - Consider harvesting today</p>
+                                </div>
+                            </div>
+
+                            <div class="card-content" style="padding: 16px;">
+                                <a href="weather.html" class="link-primary">View 7-day forecast →</a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Market Prices -->
+                    <section>
+                        <div class="card">
+                            <div class="card-content">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h2 style="font-size: 1.25rem;">Market Prices</h2>
+                                    <i data-lucide="indian-rupee" class="icon-md"
+                                        style="color: hsl(var(--muted-foreground));"></i>
+                                </div>
+
+                                <div>
+                                    <div class="price-item">
+                                        <span style="font-weight: 500;">Wheat</span>
+                                        <div class="text-right">
+                                            <div style="font-weight: 700;">₹2,150</div>
+                                            <div class="price-change up"><i data-lucide="trending-up"
+                                                    style="width: 12px; height: 12px;"></i> +2.3%</div>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <span style="font-weight: 500;">Rice</span>
+                                        <div class="text-right">
+                                            <div style="font-weight: 700;">₹3,400</div>
+                                            <div class="price-change up"><i data-lucide="trending-up"
+                                                    style="width: 12px; height: 12px;"></i> +1.1%</div>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <span style="font-weight: 500;">Cotton</span>
+                                        <div class="text-right">
+                                            <div style="font-weight: 700;">₹6,200</div>
+                                            <div class="price-change down"><i data-lucide="trending-up"
+                                                    style="width: 12px; height: 12px;"></i> -0.5%</div>
+                                        </div>
+                                    </div>
+                                    <div class="price-item">
+                                        <span style="font-weight: 500;">Soybean</span>
+                                        <div class="text-right">
+                                            <div style="font-weight: 700;">₹4,800</div>
+                                            <div class="price-change up"><i data-lucide="trending-up"
+                                                    style="width: 12px; height: 12px;"></i> +3.2%</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="mandi.html" class="link-primary"
+                                    style="display: block; text-align: center; margin-top: 16px;">View all prices →</a>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Explore Tools -->
+                <section class="mt-8">
+                    <h2 style="font-size: 1.25rem; margin-bottom: 16px;">Explore Tools</h2>
+                    <div class="explore-grid">
+                        <a href="upload.html" class="feature-card">
+                            <div class="card-content">
+                                <div class="icon-box"><i data-lucide="camera" class="icon-lg"></i></div>
+                                <div>
+                                    <h3>Disease Detection</h3>
+                                    <p>AI-powered crop disease identification from photos</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="feature-card">
+                            <div class="card-content">
+                                <div class="icon-box"><i data-lucide="sprout" class="icon-lg"></i></div>
+                                <div>
+                                    <h3>Soil Analysis</h3>
+                                    <p>Get fertilizer and soil health recommendations</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="weather.html" class="feature-card">
+                            <div class="card-content">
+                                <div class="icon-box"><i data-lucide="cloud-sun" class="icon-lg"></i></div>
+                                <div>
+                                    <h3>Weather Insights</h3>
+                                    <p>Detailed forecasts and farming alerts</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="#">Soil Health</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 1800-XXX-XXXX (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
