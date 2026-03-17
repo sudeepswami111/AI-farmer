@@ -46,13 +46,6 @@ const features = [
     href: "/mandi",
   },
   {
-    icon: <Sprout className="h-6 w-6" />,
-    title: "Soil Recommendations",
-    description:
-      "Get personalized fertilizer and soil management advice based on your crop and region.",
-    href: "/soil",
-  },
-  {
     icon: <Mic className="h-6 w-6" />,
     title: "Voice Assistant",
     description:
@@ -101,8 +94,8 @@ const Index = () => {
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-in stagger-2 leading-relaxed">
-              Get instant AI-powered advice for crop diseases, soil health,
-              weather alerts, and market prices. Available in your language,
+              Get instant AI-powered advice for crop diseases, weather alerts,
+              and market prices. Available in your language,
               designed for Indian farmers.
             </p>
 

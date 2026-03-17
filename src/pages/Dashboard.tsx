@@ -216,13 +216,6 @@ const Dashboard = () => {
                 description="AI-powered crop disease identification from photos"
               />
             </Link>
-            <Link to="/soil">
-              <FeatureCard
-                icon={<Sprout className="h-6 w-6" />}
-                title="Soil Analysis"
-                description="Get fertilizer and soil health recommendations"
-              />
-            </Link>
             <Link to="/weather">
               <FeatureCard
                 icon={<CloudSun className="h-6 w-6" />}

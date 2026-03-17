@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - KisanMitra</title>
+    <meta name="description"
+        content="Login to your KisanMitra account to access AI-powered farming tools, mandi prices, and weather alerts.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+
+<body>
+    <div class="login-page">
+
+        <!-- Left Panel - Decorative -->
+        <div class="login-left-panel">
+            <div class="login-left-overlay"></div>
+            <img src="images/hero-farm.jpg" alt="Indian farmland" class="login-left-bg">
+
+            <!-- Floating decorative blobs -->
+            <div class="login-blob login-blob-1"></div>
+            <div class="login-blob login-blob-2"></div>
+
+            <div class="login-left-content">
+                <a href="index.html" class="navbar-logo" style="margin-bottom: 48px; display: inline-flex;">
+                    <div class="logo-icon">
+                        <i data-lucide="leaf" class="icon-md"></i>
+                    </div>
+                    <span style="color: #fff;">KisanMitra</span>
+                </a>
+
+                <h1 style="color: #fff; font-size: 2.5rem; margin-bottom: 16px; line-height: 1.2;">
+                    Smart Farming,<br>
+                    <span style="color: hsl(46, 89%, 57%);">Better Harvests</span>
+                </h1>
+                <p style="color: rgba(255,255,255,0.85); font-size: 1.125rem; max-width: 400px; line-height: 1.7;">
+                    Access AI-powered crop analysis, real-time mandi prices, weather alerts, and expert farming guidance — all in one place.
+                </p>
+
+                <!-- Trust badges -->
+                <div class="login-trust-badges">
+                    <div class="login-trust-badge">
+                        <i data-lucide="shield-check" class="icon-sm"></i>
+                        <span>Secure & Private</span>
+                    </div>
+                    <div class="login-trust-badge">
+                        <i data-lucide="users" class="icon-sm"></i>
+                        <span>50,000+ Farmers</span>
+                    </div>
+                    <div class="login-trust-badge">
+                        <i data-lucide="languages" class="icon-sm"></i>
+                        <span>12+ Languages</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Login Form -->
+        <div class="login-right-panel">
+            <div class="login-form-wrapper">
+
+                <!-- Mobile logo (visible only on small screens) -->
+                <div class="login-mobile-logo">
+                    <a href="index.html" class="navbar-logo">
+                        <div class="logo-icon">
+                            <i data-lucide="leaf" class="icon-md"></i>
+                        </div>
+                        <span>KisanMitra</span>
+                    </a>
+                </div>
+
+                <div class="login-form-header">
+                    <h2 style="font-size: 1.875rem; margin-bottom: 8px;">Welcome Back</h2>
+                    <p style="color: hsl(var(--muted-foreground)); font-size: 1rem;">
+                        Sign in to continue to your dashboard
+                    </p>
+                </div>
+
+                <!-- Login Card -->
+                <div class="login-card">
+                    <form id="login-form" onsubmit="return false;">
+
+                        <!-- Email -->
+                        <div class="login-field">
+                            <label for="login-email" class="login-label">
+                                <i data-lucide="mail" class="icon-sm"></i> Email or Phone
+                            </label>
+                            <input type="text" id="login-email" class="login-input"
+                                placeholder="Enter your email or phone number" autocomplete="username" required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="login-field">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label for="login-password" class="login-label">
+                                    <i data-lucide="lock" class="icon-sm"></i> Password
+                                </label>
+                                <a href="#" class="login-forgot-link">Forgot password?</a>
+                            </div>
+                            <div class="login-password-wrapper">
+                                <input type="password" id="login-password" class="login-input"
+                                    placeholder="Enter your password" autocomplete="current-password" required>
+                                <button type="button" class="login-eye-btn" id="toggle-password"
+                                    aria-label="Toggle password visibility">
+                                    <i data-lucide="eye" class="icon-sm" id="eye-icon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember me -->
+                        <div class="login-remember">
+                            <label class="login-checkbox-label">
+                                <input type="checkbox" id="remember-me" class="login-checkbox">
+                                <span class="login-checkmark"></span>
+                                Remember me
+                            </label>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn btn-primary w-full login-submit-btn" id="login-btn">
+                            <i data-lucide="log-in" class="icon-md"></i>
+                            <span id="login-btn-text">Sign In</span>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="login-divider">
+                        <span>or continue with</span>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="login-social-buttons">
+                        <button class="btn btn-outline login-social-btn" id="google-login-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.77c-.98.66-2.23 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            Google
+                        </button>
+                        <button class="btn btn-outline login-social-btn" id="phone-login-btn">
+                            <i data-lucide="smartphone" class="icon-md"></i>
+                            OTP Login
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sign-up link -->
+                <p class="login-signup-text">
+                    Don't have an account? <a href="#" class="login-signup-link">Create Account</a>
+                </p>
+
+                <!-- Back to home -->
+                <a href="index.html" class="login-back-link">
+                    <i data-lucide="arrow-left" class="icon-sm"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Toggle password visibility
+        const toggleBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('login-password');
+        const eyeIcon = document.getElementById('eye-icon');
+
+        if (toggleBtn && passwordInput && eyeIcon) {
+            toggleBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                eyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+                lucide.createIcons();
+            });
+        }
+
+        // Login form submission simulation
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const loginBtnText = document.getElementById('login-btn-text');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value.trim();
+
+                if (!email || !password) return;
+
+                // Show loading state
+                loginBtn.disabled = true;
+                loginBtnText.textContent = 'Signing In...';
+                const icon = loginBtn.querySelector('[data-lucide]');
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'loader-2');
+                    icon.classList.add('spinner');
+                    lucide.createIcons();
+                }
+
+                // Simulate sign-in delay
+                await new Promise(r => setTimeout(r, 1800));
+
+                // Redirect to dashboard on success
+                window.location.href = 'dashboard.html';
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -40,7 +40,7 @@ export function Footer() {
           <div>
             <h4 className="font-heading text-h4 mb-4">Resources</h4>
             <ul className="space-y-2">
-              {["Farming Tips", "Disease Guide", "Soil Health", "Weather Alerts"].map((link) => (
+              {["Farming Tips", "Disease Guide", "Weather Alerts"].map((link) => (
                 <li key={link}>
                   <Link 
                     to="#"

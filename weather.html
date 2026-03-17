@@ -30,7 +30,7 @@
                 <div class="nav-actions">
                     <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
                             class="icon-md"></i></button>
-                    <button class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                    <a href="login.html" class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</a>
                 </div>
                 <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
                         class="icon-lg"></i></button>
@@ -43,7 +43,7 @@
                     <a href="mandi.html">Mandi Prices</a>
                     <a href="weather.html" class="active">Weather</a>
                     <div class="menu-divider"></div>
-                    <button class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</button>
+                    <a href="login.html" class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</a>
                 </div>
             </div>
         </header>
@@ -79,18 +79,18 @@
                                             <h2
                                                 style="font-size: 1.25rem; color: hsl(var(--primary-foreground)); margin-bottom: 4px;">
                                                 Current Weather</h2>
-                                            <p
+                                            <p id="weather-location"
                                                 style="color: hsl(var(--primary-foreground) / 0.8); font-size: 0.875rem;">
-                                                New Delhi, India</p>
+                                                Detecting location...</p>
                                         </div>
-                                        <i data-lucide="cloud-sun" style="width: 48px; height: 48px; opacity: 0.8;"></i>
+                                        <i id="weather-main-icon" data-lucide="cloud-sun" style="width: 48px; height: 48px; opacity: 0.8;"></i>
                                     </div>
 
                                     <div class="current-weather-main">
-                                        <div class="temp">28°C</div>
+                                        <div class="temp" id="weather-temp">--°C</div>
                                         <div>
-                                            <p style="font-weight: 600;">Partly Cloudy</p>
-                                            <p style="font-size: 0.875rem; opacity: 0.8;">Feels like 31°C</p>
+                                            <p style="font-weight: 600;" id="weather-desc">Loading...</p>
+                                            <p style="font-size: 0.875rem; opacity: 0.8;" id="weather-feels">Feels like --°C</p>
                                         </div>
                                     </div>
 
@@ -99,28 +99,28 @@
                                             <i data-lucide="droplets" class="icon-md"></i>
                                             <div>
                                                 <div class="label">Humidity</div>
-                                                <div class="value">65%</div>
+                                                <div class="value" id="weather-humidity">--%</div>
                                             </div>
                                         </div>
                                         <div class="weather-detail">
                                             <i data-lucide="wind" class="icon-md"></i>
                                             <div>
                                                 <div class="label">Wind</div>
-                                                <div class="value">12 km/h</div>
+                                                <div class="value" id="weather-wind">-- km/h</div>
                                             </div>
                                         </div>
                                         <div class="weather-detail">
                                             <i data-lucide="cloud-rain" class="icon-md"></i>
                                             <div>
                                                 <div class="label">Rain Chance</div>
-                                                <div class="value">30%</div>
+                                                <div class="value" id="weather-rain">--%</div>
                                             </div>
                                         </div>
                                         <div class="weather-detail">
                                             <i data-lucide="sun" class="icon-md"></i>
                                             <div>
                                                 <div class="label">UV Index</div>
-                                                <div class="value">7 (High)</div>
+                                                <div class="value" id="weather-uv">--</div>
                                             </div>
                                         </div>
                                     </div>
@@ -132,99 +132,11 @@
                         <div class="card mb-6">
                             <div class="card-content">
                                 <h2 style="font-size: 1.25rem; margin-bottom: 16px;">7-Day Forecast</h2>
-                                <div class="forecast-grid">
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Today</div>
-                                        <i data-lucide="cloud-sun"
-                                            style="width: 28px; height: 28px; color: hsl(var(--accent)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">28°</span> /
-                                            <span class="low">22°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 30%
-                                        </div>
+                                <div class="forecast-grid" id="forecast-grid">
+                                    <!-- Forecast days will be injected by JavaScript -->
+                                    <div style="grid-column: 1 / -1; text-align: center; padding: 24px; color: hsl(var(--muted-foreground));">
+                                        Loading forecast...
                                     </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Mon</div>
-                                        <i data-lucide="cloud-rain"
-                                            style="width: 28px; height: 28px; color: hsl(var(--primary)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">26°</span> /
-                                            <span class="low">21°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 80%
-                                        </div>
-                                    </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Tue</div>
-                                        <i data-lucide="cloud-rain"
-                                            style="width: 28px; height: 28px; color: hsl(var(--primary)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">25°</span> /
-                                            <span class="low">20°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 60%
-                                        </div>
-                                    </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Wed</div>
-                                        <i data-lucide="cloud"
-                                            style="width: 28px; height: 28px; color: hsl(var(--muted-foreground)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">27°</span> /
-                                            <span class="low">21°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 20%
-                                        </div>
-                                    </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Thu</div>
-                                        <i data-lucide="sun"
-                                            style="width: 28px; height: 28px; color: hsl(var(--accent)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">30°</span> /
-                                            <span class="low">23°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 10%
-                                        </div>
-                                    </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Fri</div>
-                                        <i data-lucide="sun"
-                                            style="width: 28px; height: 28px; color: hsl(var(--accent)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">31°</span> /
-                                            <span class="low">24°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 5%
-                                        </div>
-                                    </div>
-
-                                    <div class="forecast-day">
-                                        <div class="day-name">Sat</div>
-                                        <i data-lucide="cloud-sun"
-                                            style="width: 28px; height: 28px; color: hsl(var(--accent)); margin: 0 auto;"></i>
-                                        <div class="temps">
-                                            <span class="high">29°</span> /
-                                            <span class="low">22°</span>
-                                        </div>
-                                        <div class="rain-chance">
-                                            <i data-lucide="droplets" style="width: 10px; height: 10px;"></i> 15%
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -332,7 +244,6 @@
                         <div class="footer-links">
                             <a href="#">Farming Tips</a>
                             <a href="#">Disease Guide</a>
-                            <a href="#">Soil Health</a>
                             <a href="weather.html">Weather Alerts</a>
                         </div>
                     </div>
