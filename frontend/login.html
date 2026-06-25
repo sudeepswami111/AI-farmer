@@ -605,28 +605,23 @@
                             window.location.href = 'dashboard.html';
                         }, 1200);
                     } else {
-                        // REAL Magic Link — call the backend
-                        const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                            ? 'http://localhost:3000'
-                            : window.location.origin;
-
-                        const response = await fetch(baseUrl + '/api/auth/send-magic-link', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email: emailVal })
+                        const { error } = await supabaseClient.auth.signInWithOtp({
+                            email: emailVal,
+                            options: {
+                                emailRedirectTo: window.location.origin + '/dashboard.html'
+                            }
                         });
 
-                        const data = await response.json();
                         loadingPanel.style.display = 'none';
 
-                        if (!response.ok) {
-                            emailError.textContent = data.error || 'Failed to send magic link';
+                        if (error) {
+                            emailError.textContent = error.message || 'Failed to send magic link';
                             emailError.style.display = 'block';
                             return;
                         }
 
                         successTitle.textContent = '✉️ Check Your Inbox!';
-                        successMessage.textContent = `We sent a sign-in link to ${emailVal}. Click the link in the email to sign in instantly!`;
+                        successMessage.textContent = `We sent a sign-in link to ${emailVal}. Click the link to sign in.`;
                         successPanel.style.display = 'flex';
                         lucide.createIcons();
                     }
