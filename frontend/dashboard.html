@@ -255,6 +255,32 @@
     </div>
     <script src="script.js"></script>
     <script src="dashboard-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkAuth() {
+            const { data } = await supabaseClient.auth.getSession();
+
+            if (!data.session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            localStorage.setItem('kisanmitra_token', data.session.access_token);
+            localStorage.setItem('kisanmitra_user', JSON.stringify({
+                id: data.session.user.id,
+                email: data.session.user.email,
+                name: data.session.user.user_metadata?.name || data.session.user.email.split('@')[0]
+            }));
+        }
+
+        checkAuth();
+    </script>
 </body>
 
 </html>
