@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - KisanMitra</title>
+    <meta name="description"
+        content="Login to your KisanMitra account to access AI-powered farming tools, mandi prices, and weather alerts.">
+    <!-- Main Style Sheet of the Project -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Two Column Layout Styles */
+        .login-page {
+            display: flex;
+            min-height: 100vh;
+            background-color: hsl(var(--background));
+        }
+
+        /* Left Panel - Image */
+        .login-left-panel {
+            flex: 1;
+            position: relative;
+            display: none;
+            overflow: hidden;
+            background-color: hsl(var(--primary));
+        }
+
+        @media (min-width: 992px) {
+            .login-left-panel {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 4rem;
+            }
+        }
+
+        .login-left-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .login-left-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, hsl(var(--primary) / 0.9) 0%, hsl(var(--primary) / 0.4) 100%);
+            z-index: 2;
+        }
+
+        .login-left-content {
+            position: relative;
+            z-index: 3;
+            color: white;
+            max-width: 480px;
+        }
+
+        .login-left-content h1 {
+            color: white;
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-left-content p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Right Panel - Form */
+        .login-right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-right-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-form-wrapper {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Toggle switch styling */
+        .toggle-switch-container {
+            display: flex;
+            background: hsl(var(--muted));
+            padding: 4px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            border: 1px solid hsl(var(--border) / 0.5);
+        }
+
+        .toggle-switch-btn {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            color: hsl(var(--muted-foreground));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .toggle-switch-btn.active {
+            background: hsl(var(--surface));
+            color: hsl(var(--primary));
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            color: hsl(var(--foreground) / 0.8);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: hsl(var(--muted-foreground));
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .input-field-custom {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            font-size: 0.95rem;
+            border-radius: var(--radius);
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--surface));
+            color: hsl(var(--foreground));
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .input-field-custom:focus {
+            outline: none;
+            border-color: hsl(var(--primary));
+            box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+        }
+
+        .input-field-custom.error {
+            border-color: hsl(var(--destructive));
+        }
+
+        .error-message {
+            color: hsl(var(--destructive));
+            font-size: 0.75rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* Success & Loading overlays */
+        .overlay-screen {
+            position: absolute;
+            inset: 0;
+            background: hsl(var(--background) / 0.95);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            z-index: 20;
+            border-radius: var(--radius-lg);
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .checkmark-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: hsl(var(--primary) / 0.08);
+            color: hsl(var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid hsl(var(--border));
+            border-top: 4px solid hsl(var(--primary));
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .back-home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--muted-foreground));
+            transition: color 0.2s;
+            margin-top: 2rem;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .back-home-link:hover {
+            color: hsl(var(--primary));
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+
+        <!-- Left Panel - Decorative Image -->
+        <div class="login-left-panel">
+            <img src="images/hero-farm.jpg" alt="Indian farmland" class="login-left-bg">
+            <div class="login-left-overlay"></div>
+            
+            <div class="login-left-content">
+                <a href="index.html" class="navbar-logo" style="margin-bottom: 3rem; display: inline-flex; color: white;">
+                    <div class="logo-icon" style="background: white; color: hsl(var(--primary));">
+                        <i data-lucide="leaf" class="icon-md"></i>
+                    </div>
+                    <span style="color: white;">KisanMitra</span>
+                </a>
+
+                <h1>
+                    Smart Farming,<br>
+                    <span style="color: hsl(var(--accent));">Better Harvests</span>
+                </h1>
+                <p>
+                    Access AI-powered crop analysis, real-time mandi prices, weather alerts, and expert farming guidance — all in one place.
+                </p>
+
+                <!-- Trust badges -->
+                <div style="display: flex; gap: 1.5rem; margin-top: 3rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500;">
+                        <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+                        Secure & Private
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500;">
+                        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+                        50k+ Farmers
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Login Form -->
+        <div class="login-right-panel">
+            <!-- Mobile Header Logo (visible only on small screens) -->
+            <div style="padding: 1.5rem 2rem; display: flex; justify-content: flex-start;" class="mobile-logo-container">
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon">
+                        <i data-lucide="leaf" class="icon-md"></i>
+                    </div>
+                    <span>KisanMitra</span>
+                </a>
+            </div>
+            <style>
+                @media (min-width: 992px) {
+                    .mobile-logo-container {
+                        display: none !important;
+                    }
+                }
+            </style>
+
+            <div class="login-right-content">
+                <div class="login-form-wrapper" style="position: relative;">
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="font-size: 1.875rem; margin-bottom: 0.5rem; font-weight: 700;">Welcome Back</h2>
+                        <p style="color: hsl(var(--muted-foreground)); font-size: 1rem;">
+                            Sign in to continue to your dashboard
+                        </p>
+                    </div>
+
+                    <!-- Toggle Switch (Method Selection) -->
+                    <div class="toggle-switch-container">
+                        <button id="toggle-method-a" class="toggle-switch-btn active" type="button">
+                            Password Auth
+                        </button>
+                        <button id="toggle-method-b" class="toggle-switch-btn" type="button">
+                            Magic Link
+                        </button>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="login-form" novalidate>
+                        <!-- Email Input -->
+                        <div class="input-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon-left">
+                                    <i data-lucide="mail" style="width: 18px; height: 18px;"></i>
+                                </span>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    class="input-field-custom" 
+                                    placeholder="name@domain.com"
+                                    required
+                                >
+                            </div>
+                            <div id="email-error" class="error-message"></div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="input-group" id="password-container">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label for="password" style="margin-bottom: 0;">Password</label>
+                                <a href="#" style="font-size: 0.75rem; color: hsl(var(--primary)); font-weight: 600;">Forgot password?</a>
+                            </div>
+                            <div class="input-wrapper">
+                                <span class="input-icon-left">
+                                    <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    class="input-field-custom" 
+                                    placeholder="••••••••"
+                                    style="padding-right: 42px;"
+                                    required
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggle-password-visibility" 
+                                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: hsl(var(--muted-foreground)); display: flex; align-items: center;"
+                                >
+                                    <i data-lucide="eye" style="width: 18px; height: 18px;" id="password-eye-icon"></i>
+                                </button>
+                            </div>
+                            <div id="password-error" class="error-message"></div>
+                        </div>
+
+                        <!-- Action Submit Button -->
+                        <button type="submit" class="btn btn-primary w-full" id="submit-btn" style="margin-top: 10px; width: 100%;">
+                            <span id="submit-btn-text">Sign In</span>
+                            <i data-lucide="arrow-right" class="icon-sm"></i>
+                        </button>
+                    </form>
+
+                    <!-- Sign-up link -->
+                    <p id="signup-text" style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: hsl(var(--muted-foreground));">
+                        Don't have an account? <a href="#" id="signup-link" style="color: hsl(var(--primary)); font-weight: 600;">Create Account</a>
+                    </p>
+
+                    <!-- Back to Home -->
+                    <a href="index.html" class="back-home-link">
+                        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                        Back to Home
+                    </a>
+
+                    <!-- Loading State Screen -->
+                    <div id="loading-panel" class="overlay-screen" style="display: none;">
+                        <div class="spinner"></div>
+                        <h3 style="font-size: 1.25rem; margin-bottom: 6px;">Please Wait</h3>
+                        <p id="loading-text" style="color: hsl(var(--muted-foreground)); font-size: 0.875rem;">Validating credentials...</p>
+                    </div>
+
+                    <!-- Success State Screen -->
+                    <div id="success-panel" class="overlay-screen" style="display: none;">
+                        <div class="checkmark-circle">
+                            <i data-lucide="check" style="width: 32px; height: 32px;"></i>
+                        </div>
+                        <h3 id="success-title" style="font-size: 1.5rem; margin-bottom: 8px;">Login Successful</h3>
+                        <p id="success-message" style="color: hsl(var(--muted-foreground)); font-size: 0.9rem;">
+                            Redirecting you to the dashboard...
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lucide Init
+            lucide.createIcons();
+
+            // DOM Elements
+            const btnMethodA = document.getElementById('toggle-method-a');
+            const btnMethodB = document.getElementById('toggle-method-b');
+            const passwordContainer = document.getElementById('password-container');
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('toggle-password-visibility');
+            const passwordEyeIcon = document.getElementById('password-eye-icon');
+            
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const submitBtnText = document.getElementById('submit-btn-text');
+            const loadingPanel = document.getElementById('loading-panel');
+            const loadingText = document.getElementById('loading-text');
+            const successPanel = document.getElementById('success-panel');
+            const successTitle = document.getElementById('success-title');
+            const successMessage = document.getElementById('success-message');
+
+            const signupLink = document.getElementById('signup-link');
+            const signupText = document.getElementById('signup-text');
+            const formTitle = document.querySelector('.login-form-wrapper h2');
+            const formSubtitle = document.querySelector('.login-form-wrapper p');
+
+            let selectedMethod = 'A'; // 'A' = Password, 'B' = Magic Link
+            let isSignup = false;
+
+            if (signupLink) {
+                signupLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    isSignup = !isSignup;
+                    formTitle.textContent = isSignup ? 'Create Account' : 'Welcome Back';
+                    formSubtitle.textContent = isSignup ? 'Sign up to get started with KisanMitra' : 'Sign in to continue to your dashboard';
+                    submitBtnText.textContent = isSignup ? 'Create Account' : 'Sign In';
+                    signupLink.textContent = isSignup ? 'Sign In' : 'Create Account';
+                    signupText.firstChild.textContent = isSignup ? 'Already have an account? ' : "Don't have an account? ";
+                });
+            }
+
+            // Toggle logic
+            btnMethodA.addEventListener('click', () => {
+                if (selectedMethod === 'A') return;
+                selectedMethod = 'A';
+                btnMethodA.classList.add('active');
+                btnMethodB.classList.remove('active');
+                passwordContainer.style.display = 'block';
+                passwordInput.setAttribute('required', 'true');
+                submitBtnText.textContent = 'Sign In';
+            });
+
+            btnMethodB.addEventListener('click', () => {
+                if (selectedMethod === 'B') return;
+                selectedMethod = 'B';
+                btnMethodB.classList.add('active');
+                btnMethodA.classList.remove('active');
+                passwordContainer.style.display = 'none';
+                passwordInput.removeAttribute('required');
+                submitBtnText.textContent = 'Send Magic Link';
+            });
+
+            // Toggle Password Visibility
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                passwordEyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+                lucide.createIcons();
+            });
+
+            // Form Submit Interceptor
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Reset Errors
+                emailError.style.display = 'none';
+                passwordError.style.display = 'none';
+                emailInput.classList.remove('error');
+                passwordInput.classList.remove('error');
+
+                const emailVal = emailInput.value.trim();
+                const passwordVal = passwordInput.value.trim();
+                let isValid = true;
+
+                // Simple Email Regex Validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailVal)) {
+                    emailError.textContent = 'Please enter a valid email address.';
+                    emailError.style.display = 'block';
+                    emailInput.classList.add('error');
+                    isValid = false;
+                }
+
+                // Password validation (Method A only)
+                if (selectedMethod === 'A' && !passwordVal) {
+                    passwordError.textContent = 'Password is required.';
+                    passwordError.style.display = 'block';
+                    passwordInput.classList.add('error');
+                    isValid = false;
+                }
+
+                if (!isValid) return;
+
+                // Set content based on method
+                if (selectedMethod === 'A') {
+                    loadingText.textContent = 'Validating credentials...';
+                    successTitle.textContent = 'Login Successful!';
+                    successMessage.textContent = 'Logging you in... Redirecting to dashboard.';
+                } else {
+                    loadingText.textContent = 'Generating magic link...';
+                    successTitle.textContent = 'Magic Link Sent!';
+                    successMessage.textContent = 'Verification link sent! Please check your email inbox.';
+                }
+
+                // Show Loading Panel
+                loadingPanel.style.display = 'flex';
+
+                try {
+                    if (selectedMethod === 'A') {
+                        // ACTUAL LOGIN/REGISTER LOGIC
+                        const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                            ? 'http://localhost:3000' 
+                            : window.location.origin;
+
+                        const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
+                        const payload = { email: emailVal, password: passwordVal };
+                        
+                        if (isSignup) {
+                            payload.name = emailVal.split('@')[0]; // Default name from email prefix
+                        }
+
+                        const response = await fetch(baseUrl + endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            loadingPanel.style.display = 'none';
+                            emailError.textContent = data.error || 'Authentication failed';
+                            emailError.style.display = 'block';
+                            return;
+                        }
+
+                        // Registration: show 'check your email' instead of redirect
+                        if (data.requiresVerification) {
+                            loadingPanel.style.display = 'none';
+                            successTitle.textContent = '✉️ Verify Your Email!';
+                            successMessage.textContent = `We sent a verification link to ${emailVal}. Please check your inbox and click the link to activate your account.`;
+                            successPanel.style.display = 'flex';
+                            lucide.createIcons();
+                            return;
+                        }
+
+                        // Normal login: Save token and user info
+                        localStorage.setItem('kisanmitra_token', data.token);
+                        localStorage.setItem('kisanmitra_user', JSON.stringify({ ...data.user, loggedInAt: new Date().toISOString() }));
+                        
+                        loadingPanel.style.display = 'none';
+                        successTitle.textContent = isSignup ? 'Account Created!' : 'Login Successful!';
+                        successPanel.style.display = 'flex';
+                        lucide.createIcons();
+
+                        // Redirect to dashboard
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1200);
+
+                    } else {
+                        // REAL Magic Link — call the backend
+                        const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                            ? 'http://localhost:3000'
+                            : window.location.origin;
+
+                        const response = await fetch(baseUrl + '/api/auth/send-magic-link', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: emailVal })
+                        });
+
+                        const data = await response.json();
+                        loadingPanel.style.display = 'none';
+
+                        if (!response.ok) {
+                            emailError.textContent = data.error || 'Failed to send magic link';
+                            emailError.style.display = 'block';
+                            return;
+                        }
+
+                        successTitle.textContent = '✉️ Check Your Inbox!';
+                        successMessage.textContent = `We sent a sign-in link to ${emailVal}. Click the link in the email to sign in instantly!`;
+                        successPanel.style.display = 'flex';
+                        lucide.createIcons();
+                    }
+                } catch (err) {
+                    console.error('Auth error:', err);
+                    loadingPanel.style.display = 'none';
+                    emailError.textContent = 'Network error. Please try again later.';
+                    emailError.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

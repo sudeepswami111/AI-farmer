@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandi Prices - KisanMitra | Live Crop Market Rates</title>
+    <meta name="description"
+        content="Check today's live crop prices across major mandis in India. Auto-refreshed every 5 minutes with real market rates.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* ========== Mandi Page Specific Styles ========== */
+
+        .mandi-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, hsla(142, 76%, 36%, 0.08), hsla(142, 76%, 36%, 0.03));
+            border: 1px solid hsla(142, 76%, 36%, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .mandi-status-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: hsl(142, 76%, 40%);
+            animation: livePulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 hsla(142, 76%, 40%, 0.6);
+            }
+
+            50% {
+                opacity: 0.7;
+                box-shadow: 0 0 0 6px hsla(142, 76%, 40%, 0);
+            }
+        }
+
+        .mandi-status-text {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .mandi-status-text strong {
+            color: hsl(var(--foreground));
+        }
+
+        .mandi-status-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .refresh-timer {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card));
+            color: hsl(var(--foreground));
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: hsl(var(--accent));
+            border-color: hsl(var(--primary));
+        }
+
+        .refresh-btn.refreshing svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Summary Stats Row */
+        .mandi-summary-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .mandi-summary-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .summary-stat {
+            padding: 16px;
+            border-radius: 12px;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .summary-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px hsla(0, 0%, 0%, 0.08);
+        }
+
+        .summary-stat .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+        }
+
+        .summary-stat .stat-label {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            margin-top: 4px;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+        }
+
+        .stat-icon.green {
+            background: hsla(142, 76%, 36%, 0.12);
+            color: hsl(142, 76%, 36%);
+        }
+
+        .stat-icon.blue {
+            background: hsla(221, 83%, 53%, 0.12);
+            color: hsl(221, 83%, 53%);
+        }
+
+        .stat-icon.orange {
+            background: hsla(25, 95%, 53%, 0.12);
+            color: hsl(25, 95%, 53%);
+        }
+
+        .stat-icon.red {
+            background: hsla(0, 84%, 60%, 0.12);
+            color: hsl(0, 84%, 60%);
+        }
+
+        /* Crop Type Filter Tabs */
+        .crop-type-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .crop-type-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid hsl(var(--border));
+            background: transparent;
+            color: hsl(var(--muted-foreground));
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .crop-type-btn:hover {
+            background: hsl(var(--accent));
+        }
+
+        .crop-type-btn.active {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-color: hsl(var(--primary));
+        }
+
+        /* Sort Dropdown */
+        .sort-dropdown {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card));
+            color: hsl(var(--foreground));
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .sort-dropdown:focus {
+            border-color: hsl(var(--primary));
+        }
+
+        .filters-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filters-toolbar .search-input-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Enhanced Price Card */
+        .price-card {
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .price-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px hsla(0, 0%, 0%, 0.1);
+        }
+
+        .price-card .card-content {
+            padding: 20px;
+        }
+
+        .price-card .crop-emoji {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .price-card .crop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .price-card .crop-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-card .price-value {
+            display: flex;
+            align-items: baseline;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+            margin-bottom: 6px;
+        }
+
+        .price-card .price-value .unit {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: hsl(var(--muted-foreground));
+            margin-left: 2px;
+        }
+
+        .price-card .price-range {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 12px;
+        }
+
+        .price-card .price-details-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid hsl(var(--border));
+        }
+
+        .price-card .mandi-location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .price-card .arrival-info {
+            font-size: 0.75rem;
+            color: hsl(var(--muted-foreground));
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .trend-up {
+            background: hsla(142, 76%, 36%, 0.12);
+            color: hsl(142, 76%, 36%);
+        }
+
+        .trend-down {
+            background: hsla(0, 84%, 60%, 0.12);
+            color: hsl(0, 84%, 60%);
+        }
+
+        .trend-stable {
+            background: hsla(45, 93%, 47%, 0.12);
+            color: hsl(45, 93%, 47%);
+        }
+
+        /* MSP badge */
+        .msp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .msp-above {
+            background: hsla(142, 76%, 36%, 0.1);
+            color: hsl(142, 76%, 36%);
+        }
+
+        .msp-below {
+            background: hsla(0, 84%, 60%, 0.1);
+            color: hsl(0, 84%, 60%);
+        }
+
+        /* Loading skeleton */
+        .price-card-skeleton {
+            border-radius: 12px;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card));
+            padding: 20px;
+            animation: shimmer 1.5s ease-in-out infinite alternate;
+        }
+
+        .skeleton-line {
+            height: 14px;
+            border-radius: 6px;
+            background: hsl(var(--muted));
+            margin-bottom: 10px;
+        }
+
+        .skeleton-line.short {
+            width: 40%;
+        }
+
+        .skeleton-line.medium {
+            width: 65%;
+        }
+
+        .skeleton-line.long {
+            width: 90%;
+        }
+
+        .skeleton-line.price {
+            height: 28px;
+            width: 50%;
+            margin-bottom: 14px;
+        }
+
+        @keyframes shimmer {
+            from {
+                opacity: 0.6;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Fade-update animation */
+        .price-updating {
+            animation: priceFlash 0.6s ease-out;
+        }
+
+        @keyframes priceFlash {
+            0% {
+                background-color: hsla(142, 76%, 36%, 0.15);
+            }
+
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        /* Responsive grid override */
+        #price-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            #price-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            #price-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .mandi-status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters-toolbar {
+                flex-direction: column;
+            }
+        }
+
+        /* Disclaimer */
+        .mandi-disclaimer {
+            margin-top: 24px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            background: hsla(45, 93%, 47%, 0.06);
+            border: 1px solid hsla(45, 93%, 47%, 0.15);
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .mandi-disclaimer i {
+            flex-shrink: 0;
+            margin-top: 2px;
+            color: hsl(45, 93%, 47%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                    <a href="mandi.html" class="active">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <a href="login.html" class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i>
+                        Login</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                    <a href="mandi.html" class="active">Mandi Prices</a>
+                    <a href="weather.html">Weather</a>
+                    <div class="menu-divider"></div>
+                    <a href="login.html" class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i>
+                        Login</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div class="badge mb-4">
+                        <i data-lucide="indian-rupee" class="icon-sm"></i>
+                        Live Market Prices
+                    </div>
+                    <h1 style="font-size: 1.875rem; margin-bottom: 16px;">Mandi Prices</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground));">
+                        Real-time crop prices across major mandis in India. Auto-refreshed every 5 minutes.
+                    </p>
+                </div>
+
+                <!-- Live Status Bar -->
+                <div class="mandi-status-bar" id="mandi-status-bar">
+                    <div class="mandi-status-left">
+                        <span class="live-dot"></span>
+                        <span class="mandi-status-text">
+                            <strong>Live</strong> · Last updated: <span id="last-updated-time">Loading...</span>
+                        </span>
+                    </div>
+                    <div class="mandi-status-right">
+                        <span class="refresh-timer" id="refresh-timer">
+                            <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                            Next refresh in <strong id="countdown">5:00</strong>
+                        </span>
+                        <button class="refresh-btn" id="refresh-btn" aria-label="Refresh prices">
+                            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="mandi-summary-row" id="summary-stats">
+                    <div class="summary-stat">
+                        <div class="stat-icon green"><i data-lucide="trending-up" style="width:18px;height:18px;"></i>
+                        </div>
+                        <div class="stat-value" id="stat-total-crops">--</div>
+                        <div class="stat-label">Crops Tracked</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-icon blue"><i data-lucide="store" style="width:18px;height:18px;"></i></div>
+                        <div class="stat-value" id="stat-total-mandis">--</div>
+                        <div class="stat-label">Mandis Covered</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-icon green"><i data-lucide="arrow-up-right"
+                                style="width:18px;height:18px;"></i></div>
+                        <div class="stat-value" id="stat-gainers">--</div>
+                        <div class="stat-label">Price Gainers</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-icon red"><i data-lucide="arrow-down-right"
+                                style="width:18px;height:18px;"></i></div>
+                        <div class="stat-value" id="stat-losers">--</div>
+                        <div class="stat-label">Price Losers</div>
+                    </div>
+                </div>
+
+                <!-- Filters Toolbar -->
+                <div class="filters-toolbar">
+                    <div class="search-input-wrapper" style="flex: 1;">
+                        <i data-lucide="search" class="icon-md"></i>
+                        <input type="text" class="input" id="mandi-search"
+                            placeholder="Search crop, variety, or mandi..." style="padding-left: 40px;">
+                    </div>
+                    <select class="sort-dropdown" id="sort-dropdown">
+                        <option value="name-asc">Name A→Z</option>
+                        <option value="name-desc">Name Z→A</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="change-high">Change: Best First</option>
+                        <option value="change-low">Change: Worst First</option>
+                    </select>
+                </div>
+
+                <!-- State Filters -->
+                <div class="state-filters" id="state-filters">
+                    <button class="state-filter-btn active" data-state="all">All States</button>
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Crop Type Filters -->
+                <div class="crop-type-filters" id="crop-type-filters">
+                    <button class="crop-type-btn active" data-type="all">All Crops</button>
+                    <button class="crop-type-btn" data-type="cereals">🌾 Cereals</button>
+                    <button class="crop-type-btn" data-type="pulses">🫘 Pulses</button>
+                    <button class="crop-type-btn" data-type="oilseeds">🥜 Oilseeds</button>
+                    <button class="crop-type-btn" data-type="cash">💰 Cash Crops</button>
+                    <button class="crop-type-btn" data-type="spices">🌶️ Spices</button>
+                    <button class="crop-type-btn" data-type="vegetables">🥬 Vegetables</button>
+                </div>
+
+                <!-- Price Cards Container -->
+                <div id="price-cards">
+                    <!-- Loading skeletons, replaced by JS -->
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="price-card-skeleton">
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                </div>
+
+                <!-- No Results -->
+                <div id="no-results" class="no-results" style="display: none;">
+                    <i data-lucide="search-x"
+                        style="width: 48px; height: 48px; color: hsl(var(--muted-foreground)); margin-bottom: 12px;"></i>
+                    <p style="font-size: 1.1rem; font-weight: 600;">No results found</p>
+                    <p style="color: hsl(var(--muted-foreground));">Try a different search term or filter.</p>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="mandi-disclaimer">
+                    <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                    <div>
+                        <strong>Disclaimer:</strong> Prices shown are based on latest available market data from
+                        AGMARKNET and major APMCs.
+                        Actual prices may vary depending on quality, lot size, and local market conditions.
+                        Prices are in ₹ per Quintal. MSP rates are for Kharif/Rabi 2024-25 as announced by Government of
+                        India.
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 87995 73115 (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+    <script src="mandi-data.js"></script>
+</body>
+
+</html>

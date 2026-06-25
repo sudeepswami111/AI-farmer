@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KisanMitra - AI-Powered Farming Assistant</title>
+  <meta name="description" content="Get instant AI-powered advice for crop diseases, weather alerts, and market prices. Available in your language, designed for Indian farmers.">
+  <meta name="author" content="KisanMitra">
+  <meta name="keywords" content="farming, agriculture, crop disease, AI farming, mandi prices, weather alerts, Indian farmers">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div class="page-layout">
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+      <nav>
+        <a href="index.html" class="navbar-logo">
+          <div class="logo-icon">
+            <i data-lucide="leaf" class="icon-md"></i>
+          </div>
+          <span>KisanMitra</span>
+        </a>
+
+        <div class="nav-links" id="nav-links">
+          <a href="index.html" class="active">Home</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+          <a href="mandi.html">Mandi Prices</a>
+          <a href="weather.html">Weather</a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost btn-icon" aria-label="Settings">
+            <i data-lucide="settings" class="icon-md"></i>
+          </button>
+          <a href="login.html" class="btn btn-secondary btn-sm">
+            <i data-lucide="user" class="icon-sm"></i>
+            Login
+          </a>
+        </div>
+
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+          <i data-lucide="menu" class="icon-lg"></i>
+        </button>
+      </nav>
+
+      <div class="mobile-menu" id="mobile-menu">
+        <div class="menu-items">
+          <a href="index.html" class="active">Home</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+          <a href="mandi.html">Mandi Prices</a>
+          <a href="weather.html">Weather</a>
+          <div class="menu-divider"></div>
+          <a href="login.html" class="btn btn-secondary w-full">
+            <i data-lucide="user" class="icon-sm"></i>
+            Login
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-bg">
+          <img src="images/hero-farm.jpg" alt="Beautiful farmland at sunrise">
+          <div class="overlay"></div>
+        </div>
+
+        <div class="organic-shape" style="background: hsl(var(--primary)); width: 384px; height: 384px; top: -192px; right: -192px;"></div>
+        <div class="organic-shape" style="background: hsl(var(--accent)); width: 256px; height: 256px; bottom: 0; left: 25%;"></div>
+
+        <div class="container-app">
+          <div class="hero-content animate-fade-in">
+            <div class="badge mb-6" style="opacity: 0; animation: fadeInUp 0.5s ease forwards;">
+              <i data-lucide="zap" class="icon-sm"></i>
+              AI-Powered Farming Assistant
+            </div>
+
+            <h1 style="opacity: 0; animation: fadeInUp 0.5s ease 0.1s forwards;">
+              Smart Farming,<br>
+              <span>Better Harvests</span>
+            </h1>
+
+            <p class="hero-desc" style="opacity: 0; animation: fadeInUp 0.5s ease 0.2s forwards;">
+              Get instant AI-powered advice for crop diseases,
+              weather alerts, and market prices. Available in your language,
+              designed for Indian farmers.
+            </p>
+
+            <div class="hero-buttons" style="opacity: 0; animation: fadeInUp 0.5s ease 0.3s forwards;">
+              <a href="dashboard.html" class="btn btn-hero">
+                Get Started Free
+                <i data-lucide="arrow-right" class="icon-md"></i>
+              </a>
+              <a href="ask.html" class="btn btn-hero-secondary">
+                <i data-lucide="mic" class="icon-md"></i>
+                Ask a Question
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats-section">
+        <div class="container-app">
+          <div class="stats-grid">
+            <div class="stat-item animate-fade-in">
+              <div class="stat-value">50,000+</div>
+              <div class="stat-label">Farmers Helped</div>
+            </div>
+            <div class="stat-item animate-fade-in" style="animation-delay: 100ms;">
+              <div class="stat-value">95%</div>
+              <div class="stat-label">Accuracy Rate</div>
+            </div>
+            <div class="stat-item animate-fade-in" style="animation-delay: 200ms;">
+              <div class="stat-value">12+</div>
+              <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item animate-fade-in" style="animation-delay: 300ms;">
+              <div class="stat-value">24/7</div>
+              <div class="stat-label">Available</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features-section">
+        <div class="container-app">
+          <div class="section-header">
+            <h2>
+              Everything You Need for
+              <span> Better Farming</span>
+            </h2>
+            <p>
+              From disease detection to market prices, we've got you covered
+              with AI-powered tools designed specifically for Indian agriculture.
+            </p>
+          </div>
+
+          <div class="features-grid">
+            <a href="upload.html" class="feature-card animate-fade-in">
+              <div class="card-content">
+                <div class="icon-box">
+                  <i data-lucide="camera" class="icon-lg"></i>
+                </div>
+                <div>
+                  <h3>Crop Disease Detection</h3>
+                  <p>Upload photos of your crops and get instant AI-powered disease diagnosis with treatment recommendations.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="ask.html" class="feature-card animate-fade-in" style="animation-delay: 100ms;">
+              <div class="card-content">
+                <div class="icon-box">
+                  <i data-lucide="message-circle" class="icon-lg"></i>
+                </div>
+                <div>
+                  <h3>Ask Farming Questions</h3>
+                  <p>Get expert answers to any farming question using text or voice in your local language.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="weather.html" class="feature-card animate-fade-in" style="animation-delay: 200ms;">
+              <div class="card-content">
+                <div class="icon-box">
+                  <i data-lucide="cloud-sun" class="icon-lg"></i>
+                </div>
+                <div>
+                  <h3>Weather Alerts</h3>
+                  <p>Receive timely weather forecasts and alerts to protect your crops from adverse conditions.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="mandi.html" class="feature-card animate-fade-in" style="animation-delay: 300ms;">
+              <div class="card-content">
+                <div class="icon-box">
+                  <i data-lucide="indian-rupee" class="icon-lg"></i>
+                </div>
+                <div>
+                  <h3>Mandi Prices</h3>
+                  <p>Check live market prices across mandis to get the best rates for your produce.</p>
+                </div>
+              </div>
+            </a>
+
+            <a href="ask.html" class="feature-card animate-fade-in" style="animation-delay: 400ms;">
+              <div class="card-content">
+                <div class="icon-box">
+                  <i data-lucide="mic" class="icon-lg"></i>
+                </div>
+                <div>
+                  <h3>Voice Assistant</h3>
+                  <p>Simply speak your questions and get answers in Hindi, Marathi, Telugu, and more.</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trust Section -->
+      <section class="trust-section">
+        <div class="container-app">
+          <div class="trust-grid">
+            <div class="trust-content">
+              <h2>
+                Trusted by Farmers<br>
+                <span>Across India</span>
+              </h2>
+              <p>
+                Our AI models are trained on extensive agricultural data from
+                across India, ensuring accurate recommendations for local crops,
+                soil types, and climate conditions.
+              </p>
+
+              <div class="trust-list">
+                <div class="trust-item">
+                  <div class="icon-circle">
+                    <i data-lucide="shield" class="icon-md"></i>
+                  </div>
+                  <div>
+                    <h4>Verified by Experts</h4>
+                    <p>All recommendations reviewed by agricultural scientists</p>
+                  </div>
+                </div>
+
+                <div class="trust-item">
+                  <div class="icon-circle">
+                    <i data-lucide="users" class="icon-md"></i>
+                  </div>
+                  <div>
+                    <h4>Community Driven</h4>
+                    <p>Learn from thousands of farmers sharing their experiences</p>
+                  </div>
+                </div>
+
+                <div class="trust-item">
+                  <div class="icon-circle">
+                    <i data-lucide="zap" class="icon-md"></i>
+                  </div>
+                  <div>
+                    <h4>Instant Results</h4>
+                    <p>Get answers in seconds, not days</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="trust-image">
+              <div class="image-wrapper">
+                <img src="images/hero-farm.jpg" alt="Farmer in field">
+              </div>
+              <div class="floating-card animate-float">
+                <div class="card-inner">
+                  <div class="check-circle">✓</div>
+                  <div>
+                    <h4>Disease Identified</h4>
+                    <p>Leaf Blight - Treatable</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="container-app">
+          <h2>Ready to Transform Your Farming?</h2>
+          <p>
+            Join thousands of farmers who are already using KisanMitra to grow
+            better crops and earn more.
+          </p>
+          <div class="cta-buttons">
+            <a href="dashboard.html" class="btn btn-surface btn-lg">
+              Start Free Now
+              <i data-lucide="arrow-right" class="icon-md"></i>
+            </a>
+            <a href="ask.html" class="btn btn-cta-outline btn-lg">
+              Talk to AI Assistant
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="container-app py-12">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+              <div class="logo-icon">
+                <i data-lucide="leaf" class="icon-md"></i>
+              </div>
+              <span>KisanMitra</span>
+            </a>
+            <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+          </div>
+
+          <div>
+            <h4>Quick Links</h4>
+            <div class="footer-links">
+              <a href="dashboard.html">Dashboard</a>
+              <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+              <a href="upload.html">Upload Crop Image</a>
+              <a href="mandi.html">Mandi Prices</a>
+            </div>
+          </div>
+
+          <div>
+            <h4>Resources</h4>
+            <div class="footer-links">
+              <a href="#">Farming Tips</a>
+              <a href="#">Disease Guide</a>
+              <a href="weather.html">Weather Alerts</a>
+            </div>
+          </div>
+
+          <div>
+            <h4>Contact</h4>
+            <ul class="footer-contact">
+              <li>
+                <i data-lucide="phone" class="icon-sm"></i>
+                1800-XXX-XXXX (Toll Free)
+              </li>
+              <li>
+                <i data-lucide="mail" class="icon-sm"></i>
+                help@kisanmitra.in
+              </li>
+              <li>
+                <i data-lucide="map-pin" class="icon-sm"></i>
+                Agricultural Research Center, New Delhi
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© 2024 KisanMitra. All rights reserved.</p>
+          <div class="footer-bottom-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

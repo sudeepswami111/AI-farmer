@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather & Farming Alerts - KisanMitra</title>
+    <meta name="description" content="Real-time weather forecast and smart farming alerts based on your location. 7-day forecast with crop care tips.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* ========== Weather Page Enhancements ========== */
+
+        .location-search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .location-search-bar .search-input-wrapper {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .location-search-bar .input {
+            padding-left: 40px;
+            padding-right: 12px;
+        }
+
+        .location-detect-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--card));
+            color: hsl(var(--foreground));
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .location-detect-btn:hover {
+            background: hsl(var(--accent));
+            border-color: hsl(var(--primary));
+        }
+
+        .location-detect-btn.detecting i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* City suggestions dropdown */
+        .city-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: 10px;
+            box-shadow: 0 8px 30px hsla(0,0%,0%,0.12);
+            z-index: 100;
+            max-height: 260px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .city-suggestions.visible {
+            display: block;
+        }
+
+        .city-suggestion-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+
+        .city-suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .city-suggestion-item:hover {
+            background: hsl(var(--accent));
+        }
+
+        .city-suggestion-item .city-name {
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+
+        .city-suggestion-item .city-region {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Location info badge */
+        .location-info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: hsla(142, 76%, 36%, 0.08);
+            border: 1px solid hsla(142, 76%, 36%, 0.15);
+            font-size: 0.85rem;
+            color: hsl(var(--foreground));
+            margin-bottom: 20px;
+        }
+
+        .location-info-badge i {
+            color: hsl(142, 76%, 36%);
+        }
+
+        /* Coordinates small text */
+        .coords-text {
+            font-size: 0.75rem;
+            color: hsl(var(--muted-foreground));
+            margin-left: 8px;
+        }
+
+        /* Weather loading overlay */
+        .weather-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+            color: hsl(var(--muted-foreground));
+            gap: 12px;
+        }
+
+        .weather-loading .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid hsl(var(--border));
+            border-top-color: hsl(var(--primary));
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Enhanced current weather card */
+        .current-weather-card .weather-body {
+            position: relative;
+        }
+
+        .weather-updated-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+
+        /* Hourly forecast strip */
+        .hourly-strip {
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            padding: 12px 0;
+            scrollbar-width: thin;
+        }
+
+        .hourly-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            min-width: 70px;
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            border-right: 1px solid hsl(var(--border));
+        }
+
+        .hourly-item:last-child {
+            border-right: none;
+        }
+
+        .hourly-item .hour-temp {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: hsl(var(--foreground));
+        }
+
+        /* Enhanced farming tips — dynamic */
+        .dynamic-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+
+        .dynamic-tip-item:last-child {
+            border-bottom: none;
+        }
+
+        .tip-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tip-icon-box.green { background: hsla(142, 76%, 36%, 0.12); color: hsl(142, 76%, 36%); }
+        .tip-icon-box.blue { background: hsla(221, 83%, 53%, 0.12); color: hsl(221, 83%, 53%); }
+        .tip-icon-box.orange { background: hsla(25, 95%, 53%, 0.12); color: hsl(25, 95%, 53%); }
+        .tip-icon-box.red { background: hsla(0, 84%, 60%, 0.12); color: hsl(0, 84%, 60%); }
+
+        .tip-text {
+            font-size: 0.85rem;
+            color: hsl(var(--foreground));
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .location-search-bar {
+                flex-direction: column;
+            }
+            .location-search-bar .search-input-wrapper {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-layout">
+
+        <!-- Navbar -->
+        <header class="navbar" id="navbar">
+            <nav>
+                <a href="index.html" class="navbar-logo">
+                    <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                    <span>KisanMitra</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html" class="active">Weather</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-ghost btn-icon" aria-label="Settings"><i data-lucide="settings"
+                            class="icon-md"></i></button>
+                    <a href="login.html" class="btn btn-secondary btn-sm"><i data-lucide="user" class="icon-sm"></i> Login</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"
+                        class="icon-lg"></i></button>
+            </nav>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="menu-items">
+                    <a href="index.html">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                    <a href="mandi.html">Mandi Prices</a>
+                    <a href="weather.html" class="active">Weather</a>
+                    <div class="menu-divider"></div>
+                    <a href="login.html" class="btn btn-secondary w-full"><i data-lucide="user" class="icon-sm"></i> Login</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container-app py-8">
+
+                <!-- Header -->
+                <div class="page-header">
+                    <div class="badge mb-4">
+                        <i data-lucide="cloud-sun" class="icon-sm"></i>
+                        Weather Forecast
+                    </div>
+                    <h1 style="font-size: 1.875rem; margin-bottom: 16px;">Weather & Farming Alerts</h1>
+                    <p style="font-size: 1.125rem; color: hsl(var(--muted-foreground));">
+                        Real-time weather forecast based on your location with smart farming recommendations
+                    </p>
+                </div>
+
+                <!-- Location Search Bar -->
+                <div class="location-search-bar" id="location-search-bar">
+                    <div class="search-input-wrapper" style="position: relative;">
+                        <i data-lucide="search" class="icon-md"></i>
+                        <input type="text" class="input" id="city-search-input"
+                            placeholder="Search city, district, or area..."
+                            style="padding-left: 40px;" autocomplete="off">
+                        <div class="city-suggestions" id="city-suggestions"></div>
+                    </div>
+                    <button class="location-detect-btn" id="detect-location-btn">
+                        <i data-lucide="locate" style="width: 16px; height: 16px;"></i>
+                        Use My Location
+                    </button>
+                </div>
+
+                <!-- Location Info Badge -->
+                <div class="location-info-badge" id="location-badge" style="display: none;">
+                    <i data-lucide="map-pin" style="width: 16px; height: 16px;"></i>
+                    <span id="location-badge-text">--</span>
+                    <span class="coords-text" id="location-coords"></span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;" class="dashboard-grid">
+
+                    <!-- Left Column -->
+                    <div>
+
+                        <!-- Current Weather Card -->
+                        <div class="card mb-6 current-weather-card" style="overflow: hidden;">
+                            <div id="current-weather-content"
+                                style="background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8)); padding: 24px; color: hsl(var(--primary-foreground));">
+                                <div class="weather-body">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                        <div>
+                                            <h2
+                                                style="font-size: 1.25rem; color: hsl(var(--primary-foreground)); margin-bottom: 4px;">
+                                                Current Weather</h2>
+                                            <p id="weather-location"
+                                                style="color: hsl(var(--primary-foreground) / 0.8); font-size: 0.875rem;">
+                                                Detecting location...</p>
+                                        </div>
+                                        <i id="weather-main-icon" data-lucide="cloud-sun" style="width: 48px; height: 48px; opacity: 0.8;"></i>
+                                    </div>
+
+                                    <div class="current-weather-main">
+                                        <div class="temp" id="weather-temp">--°C</div>
+                                        <div>
+                                            <p style="font-weight: 600;" id="weather-desc">Loading...</p>
+                                            <p style="font-size: 0.875rem; opacity: 0.8;" id="weather-feels">Feels like --°C</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="weather-details">
+                                        <div class="weather-detail">
+                                            <i data-lucide="droplets" class="icon-md"></i>
+                                            <div>
+                                                <div class="label">Humidity</div>
+                                                <div class="value" id="weather-humidity">--%</div>
+                                            </div>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <i data-lucide="wind" class="icon-md"></i>
+                                            <div>
+                                                <div class="label">Wind</div>
+                                                <div class="value" id="weather-wind">-- km/h</div>
+                                            </div>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <i data-lucide="cloud-rain" class="icon-md"></i>
+                                            <div>
+                                                <div class="label">Rain Chance</div>
+                                                <div class="value" id="weather-rain">--%</div>
+                                            </div>
+                                        </div>
+                                        <div class="weather-detail">
+                                            <i data-lucide="sun" class="icon-md"></i>
+                                            <div>
+                                                <div class="label">UV Index</div>
+                                                <div class="value" id="weather-uv">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="weather-updated-time" id="weather-updated-time"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hourly Forecast -->
+                        <div class="card mb-6">
+                            <div class="card-content">
+                                <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Today's Hourly Forecast</h2>
+                                <div class="hourly-strip" id="hourly-strip">
+                                    <div class="weather-loading">
+                                        <div class="loading-spinner"></div>
+                                        <span>Loading hourly data...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7-Day Forecast -->
+                        <div class="card mb-6">
+                            <div class="card-content">
+                                <h2 style="font-size: 1.25rem; margin-bottom: 16px;">7-Day Forecast</h2>
+                                <div class="forecast-grid" id="forecast-grid">
+                                    <div style="grid-column: 1 / -1; text-align: center; padding: 24px; color: hsl(var(--muted-foreground));">
+                                        <div class="weather-loading">
+                                            <div class="loading-spinner"></div>
+                                            <span>Loading forecast...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+
+                        <!-- Active Alerts -->
+                        <div class="card mb-6">
+                            <div class="card-content">
+                                <h2
+                                    style="font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="bell" class="icon-md" style="color: hsl(var(--warning));"></i>
+                                    Active Alerts
+                                </h2>
+                                <div id="alerts-container">
+                                    <!-- Dynamic alerts injected here by JS -->
+                                    <div class="weather-loading" style="padding: 24px;">
+                                        <div class="loading-spinner"></div>
+                                        <span>Checking alerts...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Farming Tips (Dynamic) -->
+                        <div class="card farming-tips">
+                            <div class="card-content">
+                                <h2
+                                    style="font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                    <i data-lucide="sprout" class="icon-md" style="color: hsl(var(--primary));"></i>
+                                    Smart Farming Tips
+                                </h2>
+                                <div id="farming-tips-container">
+                                    <!-- Dynamic tips injected here by JS -->
+                                    <div class="weather-loading" style="padding: 24px;">
+                                        <div class="loading-spinner"></div>
+                                        <span>Generating tips...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container-app py-12">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="navbar-logo mb-4" style="display: inline-flex;">
+                            <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                            <span>KisanMitra</span>
+                        </a>
+                        <p>AI-powered farming assistant helping farmers make better decisions with smart technology.</p>
+                    </div>
+                    <div>
+                        <h4>Quick Links</h4>
+                        <div class="footer-links">
+                            <a href="dashboard.html">Dashboard</a>
+                            <a href="ask.html">Ask Question</a>
+          <a href="upload.html">Scan Disease</a>
+                            <a href="upload.html">Upload Crop Image</a>
+                            <a href="mandi.html">Mandi Prices</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Resources</h4>
+                        <div class="footer-links">
+                            <a href="#">Farming Tips</a>
+                            <a href="#">Disease Guide</a>
+                            <a href="weather.html">Weather Alerts</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Contact</h4>
+                        <ul class="footer-contact">
+                            <li><i data-lucide="phone" class="icon-sm"></i> 1800-XXX-XXXX (Toll Free)</li>
+                            <li><i data-lucide="mail" class="icon-sm"></i> help@kisanmitra.in</li>
+                            <li><i data-lucide="map-pin" class="icon-sm"></i> Agricultural Research Center, New Delhi
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 KisanMitra. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+    <script src="weather-data.js"></script>
+</body>
+
+</html>

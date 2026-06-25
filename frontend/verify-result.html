@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - KisanMitra</title>
+    <meta name="description" content="Email verification result for KisanMitra account.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .verify-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: hsl(var(--background));
+            position: relative;
+            overflow: hidden;
+        }
+        .organic-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.12;
+        }
+        .verify-card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius-lg);
+            padding: 56px 48px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: var(--shadow-strong);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        .icon-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .icon-ring.success { background: hsl(var(--primary) / 0.1); color: hsl(var(--primary)); }
+        .icon-ring.error   { background: hsl(var(--destructive) / 0.1); color: hsl(var(--destructive)); }
+        .icon-ring.warning { background: hsl(var(--warning) / 0.1); color: hsl(var(--warning)); }
+
+        @keyframes popIn {
+            0%   { transform: scale(0.6); opacity: 0; }
+            70%  { transform: scale(1.1); }
+            100% { transform: scale(1);   opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4); }
+            70%  { box-shadow: 0 0 0 16px hsl(var(--primary) / 0); }
+            100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+        }
+        .pulse-success { animation: pulse-ring 1.8s ease-out 0.3s 2; }
+    </style>
+</head>
+<body>
+    <div class="verify-page">
+        <!-- background blobs -->
+        <div class="organic-blob" style="background:hsl(var(--primary));width:400px;height:400px;top:-120px;right:-120px;"></div>
+        <div class="organic-blob" style="background:hsl(var(--accent));width:300px;height:300px;bottom:-80px;left:5%;"></div>
+
+        <!-- Branding -->
+        <div style="position:absolute;top:24px;left:32px;z-index:20;">
+            <a href="index.html" class="navbar-logo">
+                <div class="logo-icon"><i data-lucide="leaf" class="icon-md"></i></div>
+                <span>KisanMitra</span>
+            </a>
+        </div>
+
+        <div class="verify-card" id="verify-card">
+            <!-- Content rendered by JS below -->
+            <div class="icon-ring" id="icon-ring" style="opacity:0;"></div>
+            <h2 id="main-title" style="margin-bottom:12px;">Verifying...</h2>
+            <p id="main-desc" style="color:hsl(var(--muted-foreground));line-height:1.6;margin-bottom:28px;"></p>
+            <div id="action-area"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const params = new URLSearchParams(window.location.search);
+            const status  = params.get('status');
+            const msg     = params.get('msg') || '';
+            const email   = params.get('email') || '';
+            const token   = params.get('token') || '';
+            const name    = params.get('name') || 'Farmer';
+
+            const iconRing   = document.getElementById('icon-ring');
+            const mainTitle  = document.getElementById('main-title');
+            const mainDesc   = document.getElementById('main-desc');
+            const actionArea = document.getElementById('action-area');
+
+            function render(type, iconName, title, desc, actions) {
+                iconRing.className = `icon-ring ${type} animate-pop${type === 'success' ? ' pulse-success' : ''}`;
+                iconRing.innerHTML = `<i data-lucide="${iconName}" style="width:36px;height:36px;"></i>`;
+                iconRing.style.opacity = '1';
+                mainTitle.textContent = title;
+                mainDesc.innerHTML = desc;
+                actionArea.innerHTML = actions;
+                lucide.createIcons();
+            }
+
+            if (status === 'success') {
+                render('success', 'check-circle',
+                    '✅ Email Verified!',
+                    `Your email address <strong>${email}</strong> has been verified.<br><br>You can now sign in to KisanMitra with your password.`,
+                    `<a href="login.html" class="btn btn-primary w-full" style="width:100%;">
+                        <i data-lucide="log-in" class="icon-sm"></i> Sign In Now
+                     </a>`
+                );
+
+            } else if (status === 'magic_success') {
+                // Save token and redirect to dashboard automatically
+                if (token) {
+                    localStorage.setItem('kisanmitra_token', token);
+                    localStorage.setItem('kisanmitra_user', JSON.stringify({
+                        email, name, loggedInAt: new Date().toISOString()
+                    }));
+                }
+
+                render('success', 'sparkles',
+                    `Welcome, ${name}! 🌿`,
+                    `You've been signed in successfully.<br>Redirecting you to your dashboard in <strong id="countdown">3</strong> seconds...`,
+                    `<a href="dashboard.html" class="btn btn-primary w-full" style="width:100%;">
+                        <i data-lucide="layout-dashboard" class="icon-sm"></i> Go to Dashboard
+                     </a>`
+                );
+
+                let count = 3;
+                const cd = document.getElementById('countdown');
+                const timer = setInterval(() => {
+                    count--;
+                    if (cd) cd.textContent = count;
+                    if (count <= 0) {
+                        clearInterval(timer);
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 1000);
+
+            } else if (status === 'already') {
+                render('warning', 'check',
+                    'Already Verified',
+                    'This email address has already been verified. You can sign in now.',
+                    `<a href="login.html" class="btn btn-primary w-full" style="width:100%;">
+                        <i data-lucide="log-in" class="icon-sm"></i> Sign In
+                     </a>`
+                );
+
+            } else {
+                // error
+                render('error', 'x-circle',
+                    'Verification Failed',
+                    msg ? decodeURIComponent(msg) : 'The verification link is invalid or has expired.',
+                    `<a href="login.html" class="btn btn-primary w-full" style="width:100%;margin-bottom:12px;">
+                        <i data-lucide="arrow-left" class="icon-sm"></i> Back to Login
+                     </a>
+                     <p style="font-size:0.85rem;color:hsl(var(--muted-foreground));margin-top:12px;">
+                       Didn't get the email? 
+                       <a href="login.html" style="color:hsl(var(--primary));font-weight:600;">Request a new link</a>
+                     </p>`
+                );
+            }
+        });
+    </script>
+</body>
+</html>
