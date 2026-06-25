@@ -35,3 +35,9 @@ Thumbs.db
 
 # OS files
 Desktop.ini
+
+# Database files
+*.db
+*.sqlite
+*.db-shm
+*.db-wal
