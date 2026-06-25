@@ -42,7 +42,7 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS questions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
+    user_id TEXT,
     question TEXT NOT NULL,
     answer TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +51,7 @@ db.exec(`
 
   CREATE TABLE IF NOT EXISTS scans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
+    user_id TEXT,
     image_filename TEXT,
     disease_name TEXT,
     confidence REAL,
