@@ -549,57 +549,61 @@
 
                 try {
                     if (selectedMethod === 'A') {
-                        // ACTUAL LOGIN/REGISTER LOGIC
-                        const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                            ? 'http://localhost:3000' 
-                            : window.location.origin;
+                        let result;
 
-                        const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
-                        const payload = { email: emailVal, password: passwordVal };
-                        
                         if (isSignup) {
-                            payload.name = emailVal.split('@')[0]; // Default name from email prefix
+                            result = await supabaseClient.auth.signUp({
+                                email: emailVal,
+                                password: passwordVal,
+                                options: {
+                                    data: {
+                                        name: emailVal.split('@')[0]
+                                    },
+                                    emailRedirectTo: window.location.origin + '/dashboard.html'
+                                }
+                            });
+                        } else {
+                            result = await supabaseClient.auth.signInWithPassword({
+                                email: emailVal,
+                                password: passwordVal
+                            });
                         }
 
-                        const response = await fetch(baseUrl + endpoint, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                        const { data, error } = result;
 
-                        const data = await response.json();
-
-                        if (!response.ok) {
+                        if (error) {
                             loadingPanel.style.display = 'none';
-                            emailError.textContent = data.error || 'Authentication failed';
+                            emailError.textContent = error.message || 'Authentication failed';
                             emailError.style.display = 'block';
                             return;
                         }
 
-                        // Registration: show 'check your email' instead of redirect
-                        if (data.requiresVerification) {
-                            loadingPanel.style.display = 'none';
+                        loadingPanel.style.display = 'none';
+
+                        if (isSignup && !data.session) {
                             successTitle.textContent = '✉️ Verify Your Email!';
-                            successMessage.textContent = `We sent a verification link to ${emailVal}. Please check your inbox and click the link to activate your account.`;
+                            successMessage.textContent = `We sent a verification link to ${emailVal}. Please check your inbox.`;
                             successPanel.style.display = 'flex';
                             lucide.createIcons();
                             return;
                         }
 
-                        // Normal login: Save token and user info
-                        localStorage.setItem('kisanmitra_token', data.token);
-                        localStorage.setItem('kisanmitra_user', JSON.stringify({ ...data.user, loggedInAt: new Date().toISOString() }));
-                        
-                        loadingPanel.style.display = 'none';
+                        localStorage.setItem('kisanmitra_token', data.session.access_token);
+                        localStorage.setItem('kisanmitra_user', JSON.stringify({
+                            id: data.user.id,
+                            email: data.user.email,
+                            name: data.user.user_metadata?.name || data.user.email.split('@')[0],
+                            loggedInAt: new Date().toISOString()
+                        }));
+
                         successTitle.textContent = isSignup ? 'Account Created!' : 'Login Successful!';
+                        successMessage.textContent = 'Redirecting you to dashboard...';
                         successPanel.style.display = 'flex';
                         lucide.createIcons();
 
-                        // Redirect to dashboard
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 1200);
-
                     } else {
                         // REAL Magic Link — call the backend
                         const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
