@@ -105,7 +105,10 @@ async function updateAuthUI() {
     document.addEventListener('click', () => { dropdown.style.display = 'none'; });
 
     // Logout
-    wrapper.querySelector('.logout-btn').addEventListener('click', () => {
+    wrapper.querySelector('.logout-btn').addEventListener('click', async () => {
+      if (typeof supabaseClient !== 'undefined') {
+        await supabaseClient.auth.signOut();
+      }
       localStorage.removeItem('kisanmitra_user');
       localStorage.removeItem('kisanmitra_token');
       window.location.href = 'login.html';
