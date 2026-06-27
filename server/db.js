@@ -45,8 +45,7 @@ db.exec(`
     user_id TEXT,
     question TEXT NOT NULL,
     answer TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
   CREATE TABLE IF NOT EXISTS scans (
@@ -58,8 +57,7 @@ db.exec(`
     severity TEXT,
     treatment TEXT,
     prevention TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
 
