@@ -50,85 +50,109 @@ async function updateAuthUI() {
   const localUser = JSON.parse(localStorage.getItem('kisanmitra_user') || 'null');
   let user = localUser;
 
-  // Try to fetch fresh profile from server if we have a token
-  if (localStorage.getItem('kisanmitra_token')) {
-    try {
-      const res = await apiRequest('/api/auth/profile');
-      if (res.ok) {
-        user = await res.json();
-        // Update local storage with fresh data
-        localStorage.setItem('kisanmitra_user', JSON.stringify({ ...user, loggedInAt: new Date().toISOString() }));
+  // Helper function to render or update user info in the navbar
+  function renderUserInNavbar(userData) {
+    document.querySelectorAll('a[href="login.html"]').forEach(el => {
+      if (!userData) return;
+      const name = userData.name || 'Farmer';
+      const initial = name.charAt(0).toUpperCase();
+
+      // Check if already replaced
+      const existingWrapper = el.parentNode && el.parentNode.classList.contains('user-profile-nav') ? el.parentNode : null;
+      if (existingWrapper) {
+        const btnText = existingWrapper.querySelector('.user-name-text');
+        const avatarCircle = existingWrapper.querySelector('.user-avatar-circle');
+        if (btnText) btnText.textContent = name;
+        if (avatarCircle) avatarCircle.textContent = initial;
+        return;
       }
-    } catch (e) {
-      console.warn('Failed to verify session:', e);
-      user = null;
-    }
-  }
 
-  // Find all login links/buttons in navbar
-  document.querySelectorAll('a[href="login.html"]').forEach(el => {
-    if (!user) return; // Keep as "Login" link
-    const name = user.name || 'Farmer';
-    const initial = name.charAt(0).toUpperCase();
-
-    // Replace with user profile button
-    const wrapper = document.createElement('div');
-    wrapper.className = 'user-profile-nav';
-    wrapper.style.cssText = 'position:relative;display:inline-flex;align-items:center;';
-    wrapper.innerHTML = `
-      <button class="btn btn-secondary btn-sm user-profile-btn" style="display:flex;align-items:center;gap:6px;">
-        <span style="width:24px;height:24px;border-radius:50%;background:hsl(var(--primary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${initial}</span>
-        <span class="user-name-text">${name}</span>
-        <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
-      </button>
-      <div class="user-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:8px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:180px;z-index:999;overflow:hidden;">
-        <div style="padding:12px 16px;border-bottom:1px solid hsl(var(--border));">
-          <div style="font-weight:600;font-size:0.9rem;">${name}</div>
-          <div style="font-size:0.75rem;color:hsl(var(--muted-foreground));margin-top:2px;">${user.email}</div>
-        </div>
-        <a href="dashboard.html" style="display:flex;align-items:center;gap:8px;padding:10px 16px;color:hsl(var(--foreground));text-decoration:none;font-size:0.85rem;">
-          <i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i> Dashboard
-        </a>
-        <button class="logout-btn" style="display:flex;align-items:center;gap:8px;padding:10px 16px;width:100%;border:none;background:none;color:hsl(var(--destructive));cursor:pointer;font-size:0.85rem;text-align:left;">
-          <i data-lucide="log-out" style="width:14px;height:14px;"></i> Logout
+      // Replace with user profile button
+      const wrapper = document.createElement('div');
+      wrapper.className = 'user-profile-nav';
+      wrapper.style.cssText = 'position:relative;display:inline-flex;align-items:center;';
+      wrapper.innerHTML = `
+        <button class="btn btn-secondary btn-sm user-profile-btn" style="display:flex;align-items:center;gap:6px;">
+          <span class="user-avatar-circle" style="width:24px;height:24px;border-radius:50%;background:hsl(var(--primary));color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${initial}</span>
+          <span class="user-name-text">${name}</span>
+          <i data-lucide="chevron-down" style="width:14px;height:14px;"></i>
         </button>
-      </div>`;
-    el.replaceWith(wrapper);
+        <div class="user-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:8px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:180px;z-index:999;overflow:hidden;">
+          <div style="padding:12px 16px;border-bottom:1px solid hsl(var(--border));">
+            <div style="font-weight:600;font-size:0.9rem;">${name}</div>
+            <div style="font-size:0.75rem;color:hsl(var(--muted-foreground));margin-top:2px;">${userData.email}</div>
+          </div>
+          <a href="dashboard.html" style="display:flex;align-items:center;gap:8px;padding:10px 16px;color:hsl(var(--foreground));text-decoration:none;font-size:0.85rem;">
+            <i data-lucide="layout-dashboard" style="width:14px;height:14px;"></i> Dashboard
+          </a>
+          <button class="logout-btn" style="display:flex;align-items:center;gap:8px;padding:10px 16px;width:100%;border:none;background:none;color:hsl(var(--destructive));cursor:pointer;font-size:0.85rem;text-align:left;">
+            <i data-lucide="log-out" style="width:14px;height:14px;"></i> Logout
+          </button>
+        </div>`;
+      el.replaceWith(wrapper);
 
-    // Toggle dropdown
-    const btn = wrapper.querySelector('.user-profile-btn');
-    const dropdown = wrapper.querySelector('.user-dropdown');
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+      // Toggle dropdown
+      const btn = wrapper.querySelector('.user-profile-btn');
+      const dropdown = wrapper.querySelector('.user-dropdown');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+      });
+      document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+
+      // Logout
+      wrapper.querySelector('.logout-btn').addEventListener('click', async () => {
+        if (typeof supabaseClient !== 'undefined') {
+          await supabaseClient.auth.signOut();
+        }
+        localStorage.removeItem('kisanmitra_user');
+        localStorage.removeItem('kisanmitra_token');
+        window.location.href = 'login.html';
+      });
     });
-    document.addEventListener('click', () => { dropdown.style.display = 'none'; });
 
-    // Logout
-    wrapper.querySelector('.logout-btn').addEventListener('click', async () => {
-      if (typeof supabaseClient !== 'undefined') {
-        await supabaseClient.auth.signOut();
-      }
-      localStorage.removeItem('kisanmitra_user');
-      localStorage.removeItem('kisanmitra_token');
-      window.location.href = 'login.html';
-    });
-  });
-
-  // Update dashboard greeting with user name
-  if (user) {
+    // Update dashboard greeting with user name
     const greetEl = document.getElementById('dash-greeting');
-    if (greetEl) {
+    if (greetEl && userData) {
+      const name = userData.name || 'Farmer';
       const h = new Date().getHours();
       let greet = 'Good Morning';
       if (h >= 12 && h < 17) greet = 'Good Afternoon';
       else if (h >= 17 && h < 21) greet = 'Good Evening';
       else if (h >= 21) greet = 'Good Night';
-      greetEl.textContent = greet + ', ' + user.name + '! \ud83c\udf3e';
+      greetEl.textContent = greet + ', ' + name + '! 🌾';
     }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  // 1. Render immediately from local storage (Optimistic UI)
+  if (user) {
+    renderUserInNavbar(user);
+  }
+
+  // 2. Refresh/Verify from server in the background
+  if (localStorage.getItem('kisanmitra_token')) {
+    try {
+      const res = await apiRequest('/api/auth/profile');
+      if (res.ok) {
+        const freshUser = await res.json();
+        // Update local storage
+        localStorage.setItem('kisanmitra_user', JSON.stringify({ ...freshUser, loggedInAt: new Date().toISOString() }));
+        // If profile details changed, re-render
+        if (!user || user.name !== freshUser.name || user.email !== freshUser.email) {
+          renderUserInNavbar(freshUser);
+        }
+      } else {
+        // Token expired/invalid — clear storage and redirect
+        localStorage.removeItem('kisanmitra_user');
+        localStorage.removeItem('kisanmitra_token');
+        window.location.href = 'login.html';
+      }
+    } catch (e) {
+      console.warn('Failed to verify session in background:', e);
+    }
+  }
 }
 
 /* =================== Settings UI & Translation =================== */

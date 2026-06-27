@@ -17,6 +17,8 @@ export async function authenticateToken(req, res, next) {
     req.user = {
         id: data.user.id,
         email: data.user.email,
+        phone: data.user.phone || data.user.user_metadata?.phone || '',
+        created_at: data.user.created_at || new Date().toISOString(),
         name: data.user.user_metadata?.name || data.user.email?.split('@')[0]
     };
 
@@ -34,6 +36,8 @@ export async function optionalAuth(req, res, next) {
             req.user = {
                 id: data.user.id,
                 email: data.user.email,
+                phone: data.user.phone || data.user.user_metadata?.phone || '',
+                created_at: data.user.created_at || new Date().toISOString(),
                 name: data.user.user_metadata?.name || data.user.email?.split('@')[0]
             };
         }

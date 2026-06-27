@@ -276,13 +276,7 @@ router.post('/login', (req, res) => {
    GET /api/auth/profile
    ============================================================ */
 router.get('/profile', authenticateToken, (req, res) => {
-  try {
-    const user = db.prepare('SELECT id, name, email, phone, created_at FROM users WHERE id = ?').get(req.user.id);
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching profile' });
-  }
+  res.json(req.user);
 });
 
 export default router;
