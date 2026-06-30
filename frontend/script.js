@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
 async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem('kisanmitra_token');
   const headers = { ...options.headers };
-  
+
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
-  
+
   const baseUrl = window.location.origin.includes('file://') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:3000' 
+    ? 'http://localhost:3000'
     : window.location.origin;
 
   const url = baseUrl + endpoint;
@@ -33,7 +33,7 @@ async function apiRequest(endpoint, options = {}) {
     ...options,
     headers
   });
-  
+
   if (response.status === 401 || response.status === 403) {
     // Token invalid or expired
     localStorage.removeItem('kisanmitra_token');
@@ -41,7 +41,7 @@ async function apiRequest(endpoint, options = {}) {
     window.location.href = 'login.html';
     throw new Error('Authentication failed');
   }
-  
+
   return response;
 }
 
@@ -157,7 +157,7 @@ async function updateAuthUI() {
 
 /* =================== Settings UI & Translation =================== */
 // Initialize Google Translate
-window.googleTranslateElementInit = function() {
+window.googleTranslateElementInit = function () {
   new google.translate.TranslateElement({
     pageLanguage: 'en',
     includedLanguages: 'en,hi,as,bn,gu,kn,ks,gom,ml,mni,mr,or,pa,sa,sd,ta,te,ur',
@@ -192,18 +192,18 @@ function initSettings() {
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
-  
+
   const gtCookie = getCookie('googtrans');
   const currentLang = gtCookie ? gtCookie.split('/').pop() : 'en';
 
   // Create Settings Dropdown
   const wrapper = document.createElement('div');
   wrapper.style.cssText = 'position:relative;display:inline-flex;align-items:center;';
-  
+
   const dropdown = document.createElement('div');
   dropdown.className = 'settings-dropdown';
   dropdown.style.cssText = 'display:none;position:absolute;top:100%;right:0;margin-top:8px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:10px;box-shadow:var(--shadow-medium);min-width:220px;z-index:999;overflow:hidden;padding:12px;color:hsl(var(--foreground));';
-  
+
   dropdown.innerHTML = `
     <div style="font-weight:600;font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
       <i data-lucide="settings" style="width:18px;height:18px;"></i> Settings
@@ -250,8 +250,8 @@ function initSettings() {
   settingsBtn.parentNode.insertBefore(wrapper, settingsBtn);
   wrapper.appendChild(settingsBtn);
   wrapper.appendChild(dropdown);
-  
-  if (typeof lucide !== 'undefined') lucide.createIcons({root: dropdown});
+
+  if (typeof lucide !== 'undefined') lucide.createIcons({ root: dropdown });
 
   // Toggle Dropdown
   settingsBtn.addEventListener('click', (e) => {
@@ -265,7 +265,7 @@ function initSettings() {
   // Handle Theme Switch
   const themeToggle = document.getElementById('theme-toggle');
   const sliderDot = dropdown.querySelector('.slider-dot');
-  
+
   themeToggle.addEventListener('change', (e) => {
     if (e.target.checked) {
       document.documentElement.classList.add('dark');
@@ -279,7 +279,7 @@ function initSettings() {
       themeToggle.nextElementSibling.style.backgroundColor = 'hsl(var(--border))';
     }
   });
-  
+
   if (savedTheme === 'dark') {
     themeToggle.nextElementSibling.style.backgroundColor = 'hsl(var(--primary))';
   }
@@ -288,11 +288,19 @@ function initSettings() {
   const languageSelect = document.getElementById('language-select');
   languageSelect.addEventListener('change', (e) => {
     const lang = e.target.value;
-    
-    // Set Google Translate cookie
-    document.cookie = `googtrans=/en/${lang}; path=/`;
-    document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
-    
+
+    if (lang === 'en') {
+      // Clear the Google Translate cookie to restore original English content
+      const expiry = 'Thu, 01 Jan 1970 00:00:00 UTC';
+      document.cookie = `googtrans=; expires=${expiry}; path=/`;
+      document.cookie = `googtrans=; expires=${expiry}; path=/; domain=${window.location.hostname}`;
+      document.cookie = `googtrans=; expires=${expiry}; path=/; domain=.${window.location.hostname}`;
+    } else {
+      // Set Google Translate cookie for target language
+      document.cookie = `googtrans=/en/${lang}; path=/`;
+      document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
+    }
+
     // Reload to apply translation reliably
     window.location.reload();
   });
@@ -324,6 +332,17 @@ function initNavigation() {
           lucide.createIcons();
         }
       });
+    });
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+        mobileMenu.classList.remove('open');
+        const icon = menuBtn.querySelector('[data-lucide]');
+        if (icon) {
+          icon.setAttribute('data-lucide', 'menu');
+          if (window.lucide) lucide.createIcons();
+        }
+      }
     });
   }
 
@@ -368,7 +387,7 @@ function initAskPage() {
   const answerContainer = document.getElementById('answer-container');
   const sendBtnText = document.getElementById('send-btn-text');
   const sendBtnIcon = document.getElementById('send-btn-icon');
-  
+
   // Voice Assistant UI elements
   const voiceBtn = document.getElementById('voice-synthesis-btn');
   const voiceIcon = document.getElementById('voice-synthesis-icon');
@@ -439,7 +458,7 @@ function initAskPage() {
       micBtn.classList.add('listening');
       const indicator = document.getElementById('listening-indicator');
       if (indicator) indicator.style.display = 'flex';
-      
+
       // Cancel speech synthesis when user starts speaking
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
@@ -463,7 +482,7 @@ function initAskPage() {
 
     recognition.onend = () => {
       stopListening();
-      
+
       // Auto-submit if Hands-free Mode is active and user spoke something
       if (handsfreeToggle && handsfreeToggle.checked && textarea.value.trim()) {
         sendBtn.click();
@@ -476,9 +495,9 @@ function initAskPage() {
   function startListening() {
     if (recognition && !isListening) {
       try {
-        textarea.value = ''; 
+        textarea.value = '';
         updateSendBtn();
-        
+
         // Detect language via GoogTrans cookie to set recognition language
         const getCookie = (name) => {
           const value = `; ${document.cookie}`;
@@ -494,7 +513,7 @@ function initAskPage() {
           'ur': 'ur-IN', 'en': 'en-IN'
         };
         recognition.lang = langMap[currentLang] || currentLang;
-        
+
         recognition.start();
       } catch (e) {
         console.error('Failed to start speech recognition', e);
@@ -510,7 +529,7 @@ function initAskPage() {
     if (recognition) {
       try {
         recognition.stop();
-      } catch (e) {}
+      } catch (e) { }
     }
   }
 
@@ -574,11 +593,11 @@ function initAskPage() {
 
     const targetLocale = langMap[currentLang] || currentLang;
     const voices = window.speechSynthesis.getVoices();
-    
+
     // Case-insensitive matching for voices
     const targetLocaleLower = targetLocale.toLowerCase().replace('_', '-');
     const currentLangLower = currentLang.toLowerCase();
-    
+
     let voice = voices.find(v => {
       const vLang = v.lang.toLowerCase().replace('_', '-');
       return vLang.startsWith(targetLocaleLower) || vLang.startsWith(currentLangLower);
@@ -667,20 +686,20 @@ function initAskPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: questionText })
       });
-      
+
       const data = await response.json();
 
       // Show answer
       if (answerContainer) {
         answerContainer.style.display = 'block';
         answerContainer.classList.add('animate-fade-in');
-        
+
         // Update the actual answer text in the DOM
         const answerParagraph = answerContainer.querySelector('p');
         if (answerParagraph) {
           const text = data.answer || data.fallback || 'Sorry, I could not understand the question.';
           answerParagraph.textContent = text;
-          
+
           // Automatically speak the response
           speakAnswer(text);
         }
@@ -779,18 +798,18 @@ function initUploadPage() {
       webcamCanvas.width = webcamVideo.videoWidth;
       webcamCanvas.height = webcamVideo.videoHeight;
       context.drawImage(webcamVideo, 0, 0, webcamCanvas.width, webcamCanvas.height);
-      
+
       webcamCanvas.toBlob((blob) => {
         if (!blob) return;
         capturedFile = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
-        
+
         // Show preview
         if (previewImg) previewImg.src = URL.createObjectURL(capturedFile);
         if (previewContainer) previewContainer.style.display = 'block';
         if (webcamContainer) webcamContainer.style.display = 'none';
         if (analyzeSection) analyzeSection.style.display = 'block';
         if (resultsSection) resultsSection.style.display = 'none';
-        
+
         stopWebcam();
       }, 'image/jpeg', 0.9);
     });
@@ -851,16 +870,16 @@ function initUploadPage() {
         const data = await response.json();
 
         if (analyzeSection) analyzeSection.style.display = 'none';
-        
+
         if (resultsSection) {
           // Update DOM with actual results
           const titleEl = resultsSection.querySelector('h3');
           const confidenceEl = resultsSection.querySelector('p');
           const severityBadge = resultsSection.querySelector('.severity-badge');
-          
+
           if (titleEl) titleEl.textContent = data.disease;
           if (confidenceEl) confidenceEl.textContent = `Confidence: ${data.confidence}%`;
-          
+
           if (severityBadge) {
             severityBadge.textContent = data.severity;
             severityBadge.className = 'severity-badge severity-' + data.severity.toLowerCase();
@@ -869,15 +888,15 @@ function initUploadPage() {
           // Update treatments list
           const treatmentList = resultsSection.querySelector('.treatment-list');
           if (treatmentList && data.treatment) {
-            treatmentList.innerHTML = data.treatment.map((t, i) => 
-              `<li><span class="step-number">${i+1}</span>${t}</li>`
+            treatmentList.innerHTML = data.treatment.map((t, i) =>
+              `<li><span class="step-number">${i + 1}</span>${t}</li>`
             ).join('');
           }
 
           // Update prevention list
           const preventionList = resultsSection.querySelector('.prevention-list');
           if (preventionList && data.prevention) {
-            preventionList.innerHTML = data.prevention.map(p => 
+            preventionList.innerHTML = data.prevention.map(p =>
               `<li><span class="bullet"></span>${p}</li>`
             ).join('');
           }
@@ -913,11 +932,11 @@ function initUploadPage() {
     if (analyzeSection) analyzeSection.style.display = 'none';
     if (resultsSection) resultsSection.style.display = 'none';
     if (fileInput) fileInput.value = '';
-    
+
     // Check if cameraInput is still around from older code just in case
     const oldCameraInput = document.getElementById('camera-input');
     if (oldCameraInput) oldCameraInput.value = '';
-    
+
     capturedFile = null;
     stopWebcam();
     if (webcamContainer) webcamContainer.style.display = 'none';
@@ -937,7 +956,7 @@ function initWeatherPage() {
 }
 
 /* =================== Reusable Crop Emoji Mapping Helper =================== */
-window.getCropEmoji = function(name, category) {
+window.getCropEmoji = function (name, category) {
   const crop = (name || '').toLowerCase();
   const cat = (category || '').toLowerCase();
 
@@ -947,31 +966,31 @@ window.getCropEmoji = function(name, category) {
   if (crop.includes('maize') || crop.includes('corn')) return '🌽';
   if (crop.includes('bajra')) return '🌾';
   if (crop.includes('jowar')) return '🥣';
-  
+
   if (crop.includes('chana') || crop.includes('chickpea')) return '🫘';
   if (crop.includes('tur') || crop.includes('pigeon pea')) return '🫛';
   if (crop.includes('moong') || crop.includes('green gram')) return '🫛';
   if (crop.includes('urad') || crop.includes('black gram')) return '🫘';
   if (crop.includes('masoor') || crop.includes('red lentil')) return '🫘';
   if (crop.includes('dal') || crop.includes('pulse') || crop.includes('lentil') || crop.includes('gram')) return '🫘';
-  
+
   if (crop.includes('soybean') || crop.includes('soya')) return '🫛';
   if (crop.includes('mustard')) return '🌼';
   if (crop.includes('groundnut') || crop.includes('peanut')) return '🥜';
   if (crop.includes('sunflower')) return '🌻';
   if (crop.includes('castor')) return '🌱';
-  
+
   if (crop.includes('cotton')) return '☁️';
   if (crop.includes('sugarcane')) return '🎋';
   if (crop.includes('jute')) return '🧵';
   if (crop.includes('tobacco')) return '🍂';
-  
+
   if (crop.includes('turmeric')) return '🫚';
   if (crop.includes('cumin')) return '🧂';
   if (crop.includes('coriander')) return '🌿';
   if (crop.includes('chilli') || crop.includes('chili')) return '🌶️';
   if (crop.includes('garlic')) return '🧄';
-  
+
   if (crop.includes('onion')) return '🧅';
   if (crop.includes('potato')) return '🥔';
   if (crop.includes('tomato')) return '🍅';
