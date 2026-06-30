@@ -153,44 +153,10 @@
             <i data-lucide="alert-triangle" style="width:12px;height:12px;"></i> MSP ₹${Math.round(item.price * 1.1)} · Below MSP
            </div>`;
 
-      // Assign an emoji based on the specific crop
-      let emoji = '🌾';
-      switch (item.crop) {
-        case 'Wheat': emoji = '🌾'; break;
-        case 'Rice': emoji = '🍚'; break;
-        case 'Maize': emoji = '🌽'; break;
-        case 'Bajra': emoji = '🌾'; break;
-        case 'Jowar': emoji = '🥣'; break;
-        
-        case 'Chana': emoji = '🫘'; break;
-        case 'Tur': emoji = '🫛'; break;
-        case 'Moong': emoji = '🫛'; break;
-        case 'Urad': emoji = '🫘'; break;
-        case 'Masoor': emoji = '🫘'; break;
-        
-        case 'Soybean': emoji = '🫛'; break;
-        case 'Mustard': emoji = '🌼'; break;
-        case 'Groundnut': emoji = '🥜'; break;
-        case 'Sunflower': emoji = '🌻'; break;
-        case 'Castor Seed': emoji = '🌱'; break;
-        
-        case 'Cotton': emoji = '☁️'; break;
-        case 'Sugarcane': emoji = '🎋'; break;
-        case 'Jute': emoji = '🧵'; break;
-        case 'Tobacco': emoji = '🍂'; break;
-        
-        case 'Turmeric': emoji = '🫚'; break;
-        case 'Cumin': emoji = '🧂'; break;
-        case 'Coriander': emoji = '🌿'; break;
-        case 'Chilli': emoji = '🌶️'; break;
-        case 'Garlic': emoji = '🧄'; break;
-        
-        case 'Onion': emoji = '🧅'; break;
-        case 'Potato': emoji = '🥔'; break;
-        case 'Tomato': emoji = '🍅'; break;
-        case 'Cabbage': emoji = '🥬'; break;
-        case 'Cauliflower': emoji = '🥦'; break;
-      }
+      // Assign an emoji based on the specific crop using the global helper
+      const emoji = typeof window.getCropEmoji === 'function' 
+        ? window.getCropEmoji(item.crop, item.category) 
+        : '🌾';
 
       return `
         <div class="card price-card ${animate ? 'animate-fade-in' : ''}" style="${animate ? `animation-delay: ${index * 0.02}s` : ''}">
