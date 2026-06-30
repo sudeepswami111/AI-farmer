@@ -140,12 +140,12 @@
   function loadDashPrices() {
     // Lightweight crop data for dashboard (top 6 commodities)
     const crops = [
-      { crop: 'Wheat', emoji: '\ud83c\udf3e', base: 2650, spread: 5 },
-      { crop: 'Rice', emoji: '\ud83c\udf5a', base: 4200, spread: 6 },
-      { crop: 'Cotton', emoji: '\ud83c\udff5\ufe0f', base: 7100, spread: 4 },
-      { crop: 'Soybean', emoji: '\ud83e\udd5c', base: 4600, spread: 5 },
-      { crop: 'Chana', emoji: '\ud83e\udeb6', base: 5800, spread: 4 },
-      { crop: 'Mustard', emoji: '\ud83e\udd5c', base: 5400, spread: 4 },
+      { crop: 'Wheat', emoji: '🌾', base: 2650, spread: 5 },
+      { crop: 'Rice', emoji: '🍚', base: 4200, spread: 6 },
+      { crop: 'Cotton', emoji: '☁️', base: 7100, spread: 4 },
+      { crop: 'Soybean', emoji: '🫛', base: 4600, spread: 5 },
+      { crop: 'Chana', emoji: '🫘', base: 5800, spread: 4 },
+      { crop: 'Mustard', emoji: '🌼', base: 5400, spread: 4 },
     ];
 
     function seededRand(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
