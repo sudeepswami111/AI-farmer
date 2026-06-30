@@ -185,16 +185,9 @@ function initSettings() {
     document.documentElement.classList.add('dark');
   }
 
-  // Get current language from cookie
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-  };
-
-  const gtCookie = getCookie('googtrans');
-  const currentLang = gtCookie ? gtCookie.split('/').pop() : 'en';
+  // Use localStorage as the source of truth for selected language
+  // (Google Translate cookies are unreliable on hosted domains)
+  const currentLang = localStorage.getItem('kisanmitra_lang') || 'en';
 
   // Create Settings Dropdown
   const wrapper = document.createElement('div');
@@ -289,20 +282,40 @@ function initSettings() {
   languageSelect.addEventListener('change', (e) => {
     const lang = e.target.value;
 
-    if (lang === 'en') {
-      // Clear the Google Translate cookie to restore original English content
-      const expiry = 'Thu, 01 Jan 1970 00:00:00 UTC';
-      document.cookie = `googtrans=; expires=${expiry}; path=/`;
-      document.cookie = `googtrans=; expires=${expiry}; path=/; domain=${window.location.hostname}`;
-      document.cookie = `googtrans=; expires=${expiry}; path=/; domain=.${window.location.hostname}`;
-    } else {
-      // Set Google Translate cookie for target language
-      document.cookie = `googtrans=/en/${lang}; path=/`;
-      document.cookie = `googtrans=/en/${lang}; path=/; domain=${window.location.hostname}`;
-    }
+    // Save to localStorage — this is the reliable source of truth
+    localStorage.setItem('kisanmitra_lang', lang);
 
-    // Reload to apply translation reliably
-    window.location.reload();
+    const pastDate = 'Thu, 01 Jan 1970 00:00:00 UTC';
+    const host = window.location.hostname;
+
+    if (lang === 'en') {
+      // Step 1: Use the hidden Google Translate combo to trigger "Show original"
+      try {
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+          gtCombo.value = '';
+          gtCombo.dispatchEvent(new Event('change'));
+        }
+      } catch (_) {}
+
+      // Step 2: Nuke googtrans cookie on every possible domain variant
+      [host, `.${host}`, '', 'localhost'].forEach((domain) => {
+        const ds = domain ? `; domain=${domain}` : '';
+        document.cookie = `googtrans=; expires=${pastDate}; path=/${ds}`;
+        document.cookie = `googtrans=/en/en; expires=${pastDate}; path=/${ds}`;
+      });
+
+      // Step 3: Hard reload so there's no cached translated page
+      window.location.href = window.location.href.split('?')[0] + '?lang=en&t=' + Date.now();
+    } else {
+      // Set Google Translate cookie for target language on both domain forms
+      [host, `.${host}`].forEach((domain) => {
+        document.cookie = `googtrans=/en/${lang}; path=/; domain=${domain}`;
+      });
+      document.cookie = `googtrans=/en/${lang}; path=/`;
+
+      window.location.reload();
+    }
   });
 }
 
