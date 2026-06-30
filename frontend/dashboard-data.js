@@ -179,9 +179,11 @@
       const icon = isUp ? 'trending-up' : 'trending-down';
       const cls = isUp ? 'up' : 'down';
 
+      const emoji = typeof window.getCropEmoji === 'function' ? window.getCropEmoji(item.crop) : item.emoji;
+
       html += `
         <div class="price-item">
-          <span style="font-weight:500;">${item.emoji} ${item.crop}</span>
+          <span style="font-weight:500;">${emoji} ${item.crop}</span>
           <div class="text-right">
             <div style="font-weight:700;">\u20b9${price.toLocaleString('en-IN')}</div>
             <div class="price-change ${cls}">
