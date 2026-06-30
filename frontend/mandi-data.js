@@ -14,25 +14,29 @@
 
   async function fetchPrices(state = 'All States', type = 'All Crops') {
     try {
-      const baseUrl = window.location.origin.includes('file://') || window.location.port === '5173' 
-        ? 'http://localhost:3000' 
-        : window.location.origin;
-        
+      // Auto-detect backend: localhost for local dev, same origin for deployed
+      const isFileProtocol = window.location.protocol === 'file:';
+      const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const baseUrl = (isFileProtocol || isLocalDev) ? 'http://localhost:3000' : window.location.origin;
+
       const url = new URL('/api/mandi/prices', baseUrl);
       if (state !== 'All States') url.searchParams.append('state', state);
       if (type !== 'All Crops') url.searchParams.append('type', type);
-      
+
       const response = await fetch(url);
-      if (!response.ok) throw new Error('API Error');
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
       const data = await response.json();
-      
-      pricesCache = data.data;
-      statsCache = data.stats;
-      lastUpdated = new Date(data.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
+
+      pricesCache = data.data || [];
+      statsCache = data.stats || { total: 0, mandis: 0, up: 0, down: 0 };
+      lastUpdated = data.lastUpdated
+        ? new Date(data.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
       return true;
     } catch (err) {
-      console.error('Failed to fetch prices:', err);
+      console.error('Failed to fetch mandi prices:', err);
+      pricesCache = [];
       return false;
     }
   }
@@ -231,12 +235,29 @@
 
   async function reloadData(isAutoRefresh = false) {
     const success = await fetchPrices(currentStateFilter, currentTypeFilter);
-    if (!success) return;
-    
+
     updateSummaryStats();
     updateTimestamp();
-    renderCards(!isAutoRefresh); // animate on manual load, flash on auto
-    
+
+    if (!success) {
+      // Show a clear error state instead of empty 'No crops found'
+      const container = document.getElementById('price-cards');
+      if (container) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 48px; background: hsl(var(--card)); border-radius: 12px; border: 1px solid hsl(var(--border));">
+            <i data-lucide="wifi-off" style="width: 48px; height: 48px; color: hsl(var(--muted-foreground)); margin: 0 auto 16px; display:block;"></i>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Unable to load prices</h3>
+            <p style="color: hsl(var(--muted-foreground)); margin-bottom: 16px;">Could not connect to the price server. Please try again.</p>
+            <button onclick="location.reload()" style="padding: 10px 24px; background: hsl(var(--primary)); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">Retry</button>
+          </div>
+        `;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+      return;
+    }
+
+    renderCards(!isAutoRefresh);
+
     if (isAutoRefresh) {
       document.querySelectorAll('.price-card').forEach(card => {
         card.classList.add('price-updating');

@@ -29,13 +29,29 @@ const BASE_PRICES = {
 
 const LOCATIONS = [
   { state: 'MP', city: 'Indore' },
+  { state: 'MP', city: 'Bhopal' },
   { state: 'Gujarat', city: 'Ahmedabad' },
+  { state: 'Gujarat', city: 'Rajkot' },
   { state: 'Rajasthan', city: 'Jaipur' },
+  { state: 'Rajasthan', city: 'Jodhpur' },
   { state: 'Maharashtra', city: 'Pune' },
+  { state: 'Maharashtra', city: 'Nagpur' },
   { state: 'Karnataka', city: 'Bengaluru' },
+  { state: 'Karnataka', city: 'Hubli' },
   { state: 'UP', city: 'Lucknow' },
+  { state: 'UP', city: 'Agra' },
   { state: 'Haryana', city: 'Karnal' },
-  { state: 'Punjab', city: 'Ludhiana' }
+  { state: 'Haryana', city: 'Hisar' },
+  { state: 'Punjab', city: 'Ludhiana' },
+  { state: 'Punjab', city: 'Amritsar' },
+  { state: 'Andhra Pradesh', city: 'Vijayawada' },
+  { state: 'Andhra Pradesh', city: 'Guntur' },
+  { state: 'Tamil Nadu', city: 'Chennai' },
+  { state: 'Tamil Nadu', city: 'Coimbatore' },
+  { state: 'Telangana', city: 'Hyderabad' },
+  { state: 'Telangana', city: 'Warangal' },
+  { state: 'West Bengal', city: 'Kolkata' },
+  { state: 'West Bengal', city: 'Siliguri' },
 ];
 
 function generateDynamicPrices(stateFilter = 'All States', typeFilter = 'All Crops') {
