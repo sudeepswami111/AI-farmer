@@ -936,3 +936,64 @@ function initWeatherPage() {
   // No-op: see weather-data.js for enhanced weather engine
 }
 
+/* =================== Reusable Crop Emoji Mapping Helper =================== */
+window.getCropEmoji = function(name, category) {
+  const crop = (name || '').toLowerCase();
+  const cat = (category || '').toLowerCase();
+
+  // 1. Specific Crop Matches (partial match)
+  if (crop.includes('rice') || crop.includes('paddy')) return '🍚';
+  if (crop.includes('wheat')) return '🌾';
+  if (crop.includes('maize') || crop.includes('corn')) return '🌽';
+  if (crop.includes('bajra')) return '🌾';
+  if (crop.includes('jowar')) return '🥣';
+  
+  if (crop.includes('chana') || crop.includes('chickpea')) return '🫘';
+  if (crop.includes('tur') || crop.includes('pigeon pea')) return '🫛';
+  if (crop.includes('moong') || crop.includes('green gram')) return '🫛';
+  if (crop.includes('urad') || crop.includes('black gram')) return '🫘';
+  if (crop.includes('masoor') || crop.includes('red lentil')) return '🫘';
+  if (crop.includes('dal') || crop.includes('pulse') || crop.includes('lentil') || crop.includes('gram')) return '🫘';
+  
+  if (crop.includes('soybean') || crop.includes('soya')) return '🫛';
+  if (crop.includes('mustard')) return '🌼';
+  if (crop.includes('groundnut') || crop.includes('peanut')) return '🥜';
+  if (crop.includes('sunflower')) return '🌻';
+  if (crop.includes('castor')) return '🌱';
+  
+  if (crop.includes('cotton')) return '☁️';
+  if (crop.includes('sugarcane')) return '🎋';
+  if (crop.includes('jute')) return '🧵';
+  if (crop.includes('tobacco')) return '🍂';
+  
+  if (crop.includes('turmeric')) return '🫚';
+  if (crop.includes('cumin')) return '🧂';
+  if (crop.includes('coriander')) return '🌿';
+  if (crop.includes('chilli') || crop.includes('chili')) return '🌶️';
+  if (crop.includes('garlic')) return '🧄';
+  
+  if (crop.includes('onion')) return '🧅';
+  if (crop.includes('potato')) return '🥔';
+  if (crop.includes('tomato')) return '🍅';
+  if (crop.includes('cabbage')) return '🥬';
+  if (crop.includes('cauliflower')) return '🥦';
+
+  if (crop.includes('apple')) return '🍎';
+  if (crop.includes('banana')) return '🍌';
+  if (crop.includes('mango')) return '🥭';
+  if (crop.includes('tea')) return '🍃';
+  if (crop.includes('coffee')) return '☕';
+
+  // 2. Category Matches
+  if (cat.includes('cereal') || cat.includes('grain')) return '🌾';
+  if (cat.includes('pulse') || cat.includes('legume')) return '🫘';
+  if (cat.includes('oilseed')) return '🥜';
+  if (cat.includes('vegetable')) return '🥬';
+  if (cat.includes('fruit')) return '🍎';
+  if (cat.includes('spice') || cat.includes('condiment')) return '🌶️';
+  if (cat.includes('cash')) return '🎋';
+
+  // 3. Fallback
+  return '🌱';
+};
+
